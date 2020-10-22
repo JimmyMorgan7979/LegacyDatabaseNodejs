@@ -1,0 +1,15 @@
+extends base
+
+block content
+    form(action='/addCard', method='POST') 
+        div.form-group.p-2.text-center
+            label(for='searchword') Enter Information
+            //small <br> Don't konw your exact part or revision number? <br> You can enter a partial number. EX: DS200LRPA
+            input.form-control.my-3(type='text',name='partNumber',placeholder='Part Number')
+            //label(for='searchword') Enter Serial Number
+            input.form-control.my-3(type='text',name='serialNumber',placeholder='Enter serial number')
+            //label(for='searchword') Enter Bin Number
+            input.form-control.my-3(type='text',name='binNumber',placeholder='Enter bin number')
+            //label(for='searchword') Enter Bin Location
+            input.form-control.my-3(type='text',name='binLocation',placeholder='Enter Bin Location')
+            button.btn.btn-danger.m-2(type='submit') Add to Database
