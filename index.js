@@ -35,8 +35,15 @@ app.get('/', function(req,res){
 //Route for search results to be displayed
 app.post('/searchresult', function(req,res){
     var search = req.body;
-    console.log(search);
-    res.render('searchResult', {banner: 'Search Results', search})
+    //console.log(search);
+//need a way to loop through the search results and display them all     
+    Card.find({partNumber: search.searchWord},
+        function(err,response){
+            console.log(response);
+            res.render('searchResult', {banner: 'Search Results', search,response});
+        });
+   
+    //res.render('searchResult', {banner: 'Search Results', search,response})
 })
 //Route for items to be added to database
 app.get('/addCard', function(req,res){
