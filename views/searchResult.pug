@@ -4,10 +4,10 @@ block content
     div.text-center.mb-4.h5 Search results for #{search.searchWord}
     ol
     each item in response
-        form(action='#', method='DELETE')
-            li (name= #{item._id}) 
-            |#{item.partNumber}</br>
-            |#{item.serialNumber}</br>
-            |#{item.binNumber}</br>
-            |#{item.binLocation}</br>
+        li 
+        |#{item.partNumber}</br>
+        |#{item.serialNumber}</br>
+        |#{item.binNumber}</br>
+        |#{item.binLocation}</br>
+        a(href=`/test/${item._id}/delete`) Delete
     a.btn.btn-danger.btn-block.mt-4(href='/') Go Back

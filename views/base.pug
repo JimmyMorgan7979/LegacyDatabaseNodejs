@@ -14,12 +14,16 @@ html
 			.row.mt-3.mb-3
 				.col-sm.text-center 
 					a(href='/') Home					
-					a.mx-2(href='/addCard') |  Add to Legacy  |
-					a(href='/deleteCard') Remove from Legacy 
+					a.mx-2(href='/addCard') | Add to Legacy
 			.row
 				div.col-sm.text-center.border.bg-secondary
 					div.text-left.text-white.px-1 
 						banner= `${banner}`
+			.row
+				.col-sm
+				.col-sm-6.mt-3.text-center.h4.text-success.bg-light 
+					message=`${message}`
+				.col-sm
 			.row.mt-3
 				.col-sm
 				.col-sm-6

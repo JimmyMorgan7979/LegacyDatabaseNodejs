@@ -30,24 +30,29 @@ var Card = mongoose.model("Card", boardSchema);
 
 // Route for home page
 app.get('/', function(req,res){
-	res.render('home', {banner: 'Legacy Search'});
+	res.render('home', {banner: 'Legacy Search', message:''});
 });
 //Route for search results to be displayed
 app.post('/searchresult', function(req,res){
-    var search = req.body;
-    //console.log(search);
-//need a way to loop through the search results and display them all     
-    Card.find({partNumber: search.searchWord},
+    var search = req.body; 
+    Card.find({partNumber: {$regex: search.searchWord, $options: 'i'}},
         function(err,response){
-            console.log(response);
-            res.render('searchResult', {banner: 'Search Results', search,response});
+            //console.log(response);
+            res.render('searchResult', {banner: 'Search Results', search,response, message:''});
         });
-   
-    //res.render('searchResult', {banner: 'Search Results', search,response})
-})
+});
+//Route for items to be removed from the database
+app.get('/test/:id/delete',function(req,res){
+    Card.deleteOne({_id: req.params.id},
+        function(err){
+            if(err) res.json(err);
+            else
+                res.redirect('/')
+        });
+});
 //Route for items to be added to database
 app.get('/addCard', function(req,res){
-    res.render('addCard', {banner: 'Add To Legacy'});
+    res.render('addCard', {banner: 'Add To Legacy',message:''});
 })
 app.post('/addCard', function(req,res){
     var cardInfo = req.body;
@@ -61,13 +66,9 @@ app.post('/addCard', function(req,res){
         if(err)
             res.send("error");
         else
-            res.send("success");
+            res.render('home', {banner: 'Legacy', message: 'Added Record to DB'});
     }) ;
 });
-//Route for items to be deleted from database
-app.get('/deleteCard', function(req,res){
-    res.render('deleteCard', {banner: 'Delete From Legacy'});
-})
 
 //Port that the app sends to
 app.listen(3002);
