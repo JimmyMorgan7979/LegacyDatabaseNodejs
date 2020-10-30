@@ -6,7 +6,7 @@ app.use('/static', express.static('public'))
 
 //Mongodb connection new 10-22-20
 var mongoose = require('mongoose');
-
+var mongoDB='mongodb+srv://admin:Pergatory_1979@cluster0.3duu7.mongodb.net/local_library?retryWrites=true&w=majority';
 mongoose.connect(mongoDB,{useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console,'MongoDB connection error:'));
@@ -42,7 +42,7 @@ app.post('/searchresult', function(req,res){
         });
 });
 //Route for items to be removed from the database
-app.get('/test/:id/delete',function(req,res){
+app.get('/del/:id/delete',function(req,res){
     Card.deleteOne({_id: req.params.id},
         function(err){
             if(err) res.json(err);
@@ -69,6 +69,10 @@ app.post('/addCard', function(req,res){
             res.render('home', {banner: 'Legacy', message: 'Added Record to DB'});
     }) ;
 });
+app.get('/edit', function(req,res)
+{
+    res.render('editCard', {banner: 'Edit Entry', message:''});
+});
 
 //Port that the app sends to
-app.listen(3002);
+app.listen(3001);
