@@ -6,10 +6,14 @@ block content
         each item in response
             li.my-3
                 form(action="POST") 
-                    | Part Number: #{item.partNumber})</br>
+                    | Part Number: #{item.partNumber}</br>
                     | Serial Number: #{item.serialNumber}</br>
                     | Bin Number: #{item.binNumber}</br>
                     | Bin Location: #{item.binLocation}</br>
-                    a.btn.btn-danger.btn-sm(href=`/del/${item._id}/delete`) Delete
-                    a.btn.btn-info.btn-sm.mx-2(href='#') Edit
+                    | Reman Price: #{item.remanPrice}</br>
+                    | Exchange Price: #{item.exchangePrice}</br>
+                    | Date Received: #{item.dateReceived}</br>
+                    //a.btn.btn-danger.btn-sm(href=`/del/${item._id}/delete`) Delete
+                    //a.btn.btn-info.btn-sm.mx-2(href='#') Edit
+                    <hr>
     a.btn.btn-secondary.btn-block.mt-4(href='/') Go Back

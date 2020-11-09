@@ -24,23 +24,30 @@ var boardSchema = mongoose.Schema({
     partNumber: String,
     serialNumber: String,
     binNumber: String,
-    binLocation: String
+    binLocation: String,
+    remanPrice: String,
+    exchangePrice: String,
+    dateReceived: String
 });
 var Card = mongoose.model("Card", boardSchema);
+
+//Database Model for our boards
 
 // Route for home page
 app.get('/', function(req,res){
 	res.render('home', {banner: 'Legacy Search', message:''});
 });
+
 //Route for search results to be displayed
 app.post('/searchresult', function(req,res){
-    var search = req.body; 
+   var search = req.body; 
     Card.find({partNumber: {$regex: search.searchWord, $options: 'i'}},
         function(err,response){
-            //console.log(response);
+            console.log(response);
             res.render('searchResult', {banner: 'Search Results', search,response, message:''});
-        });
+        }).limit(20);
 });
+
 //Route for items to be removed from the database
 app.get('/del/:id/delete',function(req,res){
     Card.deleteOne({_id: req.params.id},
@@ -72,6 +79,20 @@ app.post('/addCard', function(req,res){
 app.get('/edit', function(req,res)
 {
     res.render('editCard', {banner: 'Edit Entry', message:''});
+});
+
+//This begins the section
+//TODO :::: MAKE THIS WORK
+app.get('/parts', function(req,res){
+    res.render('partSearchhome', {banner: 'Parts Search', message:''});
+});
+//display parts search results
+app.post('/partsearchresult', function(req,res){
+    var search = req.body; 
+    Part.find({partNumber: {$regex: search.searchWord, $options: 'i'}},
+        function(err,response){
+            res.render('searchResult', {banner: 'Search Results', search,response, message:''});
+        });
 });
 
 //Port that the app sends to

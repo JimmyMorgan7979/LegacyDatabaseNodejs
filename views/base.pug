@@ -12,13 +12,17 @@ html
 					img.img-fluid(src='static/photos/abb.png')
 				.col-sm.text-right Louisville Service Center<br>240 Production Court<br>Louisville, KY 40299<br>P: (502)-493-8000<br>F: (502)-493-0640
 			.row.mt-3.mb-3
-				.col-sm.text-center 
-					a(href='/') Home					
-					a.mx-2(href='/addCard') | Add to Legacy
+				.col-sm-12.text-center
+					a.mx-2.btn(href='/') Search Legacy
+					a.mx-2.btn(href='/parts') Parts Search			
+					a.mx-2.btn(href='/addCard') Add to Legacy
 			.row
 				div.col-sm.text-center.border.bg-secondary
 					div.text-left.text-white.px-1 
 						banner= `${banner}`
+						//a.mx-2.btn(href='/') Search Legacy
+						//a.mx-2.btn(href='/parts') Parts Search
+						//a.mx-2.btn(href='/addCard') Add to Legacy
 			.row
 				.col-sm
 				.col-sm-6.mt-3.text-center.h4.text-success.bg-light 
