@@ -49,22 +49,38 @@ var partSchema = mongoose.Schema({
 });
 var Part = mongoose.model("Part", partSchema);
 
-// Route for home page
+// Route for legacy home page
 app.get('/', function(req,res){
 	res.render('home', {banner: 'Legacy Search', message:''});
 });
 
-//Route for search results to be displayed
+//Route for search by Model Number results to be displayed
 app.post('/searchresult', function(req,res){
-   var search = req.body; 
+   var search = req.body;
+   //console.log(search)
     Card.find({partNumber: {$regex: search.searchWord, $options: 'i'}},
         function(err,response){
             //console.log(response);
             res.render('searchResult', {banner: 'Search Results', search,response, message:''});
         }).limit(20);
 });
+//THIS SECTION IS FOR "SEARCH BY SERIAL NUMBER"
+app.get('/serialSearch', function(req,res){
+	res.render('serialSearch', {banner: 'Search By Serial Number', message:''});
+});
+app.post('/serialSearch', function(req,res){
+    var search = req.body;
+    console.log(search)
+     Card.find({serialNumber: {$regex: search.searchWord, $options: 'i'}},
+         function(err,response){
+             //console.log(response);
+             res.render('serialSearchResult', {banner: 'Search Results', search,response, message:''});
+         }).limit(20);
+ });
 
-//Route for items to be removed from the database
+
+
+//Route for items to be removed from the legacy database
 app.get('/del/:id/delete',function(req,res){
     Card.deleteOne({_id: req.params.id},
         function(err){
@@ -73,7 +89,7 @@ app.get('/del/:id/delete',function(req,res){
                 res.redirect('/')
         });
 });
-//Route for items to be added to database
+//Route for items to be added to legacy database
 app.get('/addCard', function(req,res){
     res.render('addCard', {banner: 'Add To Legacy',message:''});
 })
@@ -92,29 +108,26 @@ app.post('/addCard', function(req,res){
             res.render('home', {banner: 'Legacy', message: 'Added Record to DB'});
     }) ;
 });
-// Edit function
+// Edit function for legacy database
 app.get('/edit', function(req,res)
 {
     res.render('editCard', {banner: 'Edit Entry', message:''});
 });
 
 //This begins the section for parts search
-
 app.get('/parts', function(req,res){
     res.render('partSearchhome', {banner: 'Parts Search', message:''});
 });
 //display parts search results
 app.post('/partSearchResult', function(req,res){
     var search = req.body;
-    //console.log(search)
-    //res.send("hi")
     Part.find({stockedAS: {$regex: search.searchWord, $options: 'i'}},
         function(err,response){
             res.render('partSearchResult', {banner: 'Search Results', search,response, message:''});
         }).limit(20);
 });
 
-
+//Route to add parts
 app.get ('/addPart', function(req,res){
     res.render('addPart')
 })
@@ -143,5 +156,10 @@ app.post('/addPart', function(req,res){
     });
 });
 
+
+//POSSIBLE LANDING PAGE
+app.get('/landing', function(req,res){
+    res.render('landing', {banner: 'ABB Louisville, KY',message:''});
+})
 //Port that the app sends to
 app.listen(3001);
