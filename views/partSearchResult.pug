@@ -1,0 +1,37 @@
+extends base
+
+block content
+    div.text-center.mb-4.h5 Search results for "#{search.searchWord}"
+    ol.list-unstyled
+        each item in response
+            li.my-3
+                form(action="POST") 
+                    | Stocked As: #{item.stockedAS}</br>
+                    if item.description1
+                        | Description: #{item.description1}</br>
+                    if item.description2
+                        | Description 2: #{item.description2}</br>
+                    if item.manufacturer
+                        | Manufacturer: #{item.manufacturer}</br>
+                    if item.sapNumber
+                        | SAP Number: #{item.sapNumber}</br>
+                    if item.location1
+                        | Location 1: #{item.location1}</br>
+                    if item.location2
+                        | Location 2: #{item.location2}</br>
+                    if item.location3
+                        | Location 3: #{item.location3}</br>
+                    if item.drawer
+                        | Drawer: #{item.drawer}</br>
+                    if item.cross1
+                        | Cross 1: #{item.cross1}</br>
+                    if item.cross2
+                        | Cross 2: #{item.cross2}</br>
+                    if item.cross3
+                        | Cross 3: #{item.cross3}</br>
+                    if item.price
+                        | Price: #{item.price}</br>
+                    //a.btn.btn-danger.btn-sm(href=`/del/${item._id}/delete`) Delete
+                    //a.btn.btn-info.btn-sm.mx-2(href='#') Edit
+                    <hr>
+    a.btn.btn-secondary.btn-block.mt-4(href='/parts') Go Back

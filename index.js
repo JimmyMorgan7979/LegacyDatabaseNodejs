@@ -31,7 +31,23 @@ var boardSchema = mongoose.Schema({
 });
 var Card = mongoose.model("Card", boardSchema);
 
-//Database Model for our boards
+//Database Model for our parts
+var partSchema = mongoose.Schema({
+    stockedAS: String,
+    description1: String,
+    sapNumber: String,
+    manufacturer: String,
+    description2: String,
+    location1: String,
+    location2: String,
+    location3: String,
+    drawer: String,
+    cross1: String,
+    cross2: String,
+    cross3: String,
+    price: String
+});
+var Part = mongoose.model("Part", partSchema);
 
 // Route for home page
 app.get('/', function(req,res){
@@ -43,7 +59,7 @@ app.post('/searchresult', function(req,res){
    var search = req.body; 
     Card.find({partNumber: {$regex: search.searchWord, $options: 'i'}},
         function(err,response){
-            console.log(response);
+            //console.log(response);
             res.render('searchResult', {banner: 'Search Results', search,response, message:''});
         }).limit(20);
 });
@@ -76,23 +92,55 @@ app.post('/addCard', function(req,res){
             res.render('home', {banner: 'Legacy', message: 'Added Record to DB'});
     }) ;
 });
+// Edit function
 app.get('/edit', function(req,res)
 {
     res.render('editCard', {banner: 'Edit Entry', message:''});
 });
 
-//This begins the section
-//TODO :::: MAKE THIS WORK
+//This begins the section for parts search
+
 app.get('/parts', function(req,res){
     res.render('partSearchhome', {banner: 'Parts Search', message:''});
 });
 //display parts search results
-app.post('/partsearchresult', function(req,res){
-    var search = req.body; 
-    Part.find({partNumber: {$regex: search.searchWord, $options: 'i'}},
+app.post('/partSearchResult', function(req,res){
+    var search = req.body;
+    //console.log(search)
+    //res.send("hi")
+    Part.find({stockedAS: {$regex: search.searchWord, $options: 'i'}},
         function(err,response){
-            res.render('searchResult', {banner: 'Search Results', search,response, message:''});
-        });
+            res.render('partSearchResult', {banner: 'Search Results', search,response, message:''});
+        }).limit(20);
+});
+
+
+app.get ('/addPart', function(req,res){
+    res.render('addPart')
+})
+app.post('/addPart', function(req,res){
+    var partInfo = req.body;
+    var newPart = new Part({
+        stockedAS: partInfo.stockedAS,
+        description1: partInfo.description1,
+        sapNumber: partInfo.sapNumber,
+        manufacturer: partInfo.manufacturer,
+        description2: partInfo.description2,
+        location1: partInfo.location1,
+        location2: partInfo.location2,
+        location3: partInfo.location3,
+        drawer: partInfo.drawer,
+        cross1: partInfo.cross1,
+        cross2: partInfo.cross2,
+        cross3: partInfo.cross3,
+        price: partInfo.price
+    });
+    newPart.save(function(err,Card){
+        if(err)
+            res.send("error");
+        else
+            res.render('partSearchhome', {banner: 'Parts Search', message: 'Added Record to DB'});
+    });
 });
 
 //Port that the app sends to

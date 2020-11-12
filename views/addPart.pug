@@ -1,0 +1,25 @@
+extends base
+
+block content
+    form(action='/addPart', method='POST') 
+        div.form-group.p-2.text-center
+            label(for='searchword') Enter Information
+            input.form-control.my-3(type='text',name='stockedAS',placeholder='Part Number')
+            input.form-control.my-3(type='text',name='description1',placeholder='Enter serial number')
+            input.form-control.my-3(type='text',name='sapNumber',placeholder='Enter bin number')
+            input.form-control.my-3(type='text',name='manufacturer',placeholder='Enter Bin Location')
+            input.form-control.my-3(type='text',name='description2',placeholder='Part Number')
+            input.form-control.my-3(type='text',name='location1',placeholder='Part Number')
+            input.form-control.my-3(type='text',name='location2',placeholder='Part Number')
+            input.form-control.my-3(type='text',name='location3',placeholder='Part Number')
+            input.form-control.my-3(type='text',name='drawer',placeholder='Part Number')
+            input.form-control.my-3(type='text',name='cross1',placeholder='Part Number')
+            input.form-control.my-3(type='text',name='cross2',placeholder='Part Number')
+            input.form-control.my-3(type='text',name='cross3',placeholder='Part Number')
+            input.form-control.my-3(type='text',name='price',placeholder='Part Number')
+            button.btn.btn-danger.m-2(type='submit') Add to Database
+
+
+
+
+    
