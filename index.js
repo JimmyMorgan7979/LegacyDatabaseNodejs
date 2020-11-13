@@ -30,6 +30,17 @@ var boardSchema = mongoose.Schema({
     dateReceived: String
 });
 var Card = mongoose.model("Card", boardSchema);
+//DATABASE MODEL FOR REMOVED CARDS
+var removedboardSchema = mongoose.Schema({
+    partNumber: String,
+    serialNumber: String,
+    binNumber: String,
+    binLocation: String,
+    remanPrice: String,
+    exchangePrice: String,
+    dateRemoved: String
+});
+var RemovedCard = mongoose.model("RemovedCard",removedboardSchema);
 
 //Database Model for our parts
 var partSchema = mongoose.Schema({
@@ -80,8 +91,27 @@ app.post('/serialSearch', function(req,res){
 
 
 
-//Route for items to be removed from the legacy database
+//Route for items to be removed from the legacy database AND ALSO INSERTS INTO THE DELETED TABLE
 app.get('/del/:id/delete',function(req,res){
+    test = Card.find({_id: req.params.id},
+        function(err,response){
+            console.log(response[0].serialNumber)
+            var today = new Date();
+            var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
+            var adddeleted = response[0];
+            var removedcard = new RemovedCard({
+                partNumber: adddeleted.partNumber,
+                serialNumber: adddeleted.serialNumber,
+                binNumber: adddeleted.binNumber,
+                binLocation: adddeleted.binLocation,
+                dateRemoved: date
+            });
+            removedcard.save(function(err,RemovedCard){
+                if(err)
+                    res.send("error");
+            });
+        });
+    //console.log(test)
     Card.deleteOne({_id: req.params.id},
         function(err){
             if(err) res.json(err);
@@ -94,12 +124,15 @@ app.get('/addCard', function(req,res){
     res.render('addCard', {banner: 'Add To Legacy',message:''});
 })
 app.post('/addCard', function(req,res){
+    var today = new Date();
+    var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
     var cardInfo = req.body;
     var newCard = new Card({
         partNumber: cardInfo.partNumber,
         serialNumber: cardInfo.serialNumber,
         binNumber: cardInfo.binNumber,
-        binLocation: cardInfo.binLocation
+        binLocation: cardInfo.binLocation,
+        dateReceived: date
     });
     newCard.save(function(err,Card){
         if(err)
