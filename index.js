@@ -159,6 +159,17 @@ app.post('/partSearchResult', function(req,res){
             res.render('partSearchResult', {banner: 'Search Results', search,response, message:''});
         }).limit(20);
 });
+//THIS BEGINS THE SECTION FOR SEARCH PARTS BY LV NUMBER
+app.get('/lvSearch', function(req,res){
+	res.render('partSearchLVHome', {banner: 'Search By "LV" Number', message:''});
+});
+app.post('/lvSearch', function(req,res){
+    var search = req.body;
+    Part.find({sapNumber: {$regex: search.searchWord, $options: 'i'}},
+        function(err,response){
+            res.render('partSearchResult', {banner: 'Search Results', search,response, message:''});
+        }).limit(20);
+});
 
 //Route to add parts
 app.get ('/addPart', function(req,res){
@@ -189,10 +200,5 @@ app.post('/addPart', function(req,res){
     });
 });
 
-
-//POSSIBLE LANDING PAGE
-app.get('/landing', function(req,res){
-    res.render('landing', {banner: 'ABB Louisville, KY',message:''});
-})
 //Port that the app sends to
 app.listen(3001);
