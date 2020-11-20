@@ -1,0 +1,25 @@
+extends base
+
+block content
+    div.text-center.mb-4.h5 Requested Part
+    ol.list-unstyled
+        li.my-3
+            form(action='/getRequest', method="POST") 
+                | Stocked As: #{item1}</br>
+                | Description: #{item2}</br>
+                | SAP Number: #{item3}</br>
+                | Price: #{item4}</br>
+                <hr>
+            form(action='/requestPart', method='POST') 
+                div.form-group.p-2.text-center
+                    label(for='searchword') Contact Info
+                    input.form-control.my-3(type='text',name='name',placeholder='Name')
+                    input.form-control.my-3(type='text',name='company',placeholder='Company Name')
+                    input.form-control.my-3(type='text',name='email',placeholder='Email Address')
+                    input.form-control.my-3(type='text',name='phone',placeholder='Phone Number')
+                    textarea.form-control.my-3(name='message', rows=5, placeholder='Enter Message')
+                    input(type='hidden', name='stockedAS', value=`${item1}`)
+                    input(type='hidden', name='description1', value=`${item2}`)
+                    input(type='hidden', name='sapNumber', value=`${item3}`)
+                    input(type='hidden', name='price', value=`${item4}`)
+                    button.btn.btn-danger.m-2(type='submit') Submit Request            

@@ -5,7 +5,7 @@ block content
     ol.list-unstyled
         each item in response
             li.my-3
-                form(action="POST") 
+                form(action='/getRequest', method="POST") 
                     | Stocked As: #{item.stockedAS}</br>
                     if item.description1
                         | Description: #{item.description1}</br>
@@ -31,7 +31,12 @@ block content
                         | Cross 3: #{item.cross3}</br>
                     if item.price
                         | Price: #{item.price}</br>
+                    input(type='hidden', name='stockedAS', value=`${item.stockedAS}`)
+                    input(type='hidden', name='description1', value=`${item.description1}`)
+                    input(type='hidden', name='sapNumber', value=`${item.sapNumber}`)
+                    input(type='hidden', name='price', value=`${item.price}`)
                     //a.btn.btn-danger.btn-sm(href=`/del/${item._id}/delete`) Delete
-                    //a.btn.btn-info.btn-sm.mx-2(href='#') Edit                      
+                    //a.btn.btn-info.btn-sm.mx-2(href='/requestEmail') Request Quote                     
+                    button.btn.btn-danger.m-2(type='submit') Request Quote
                     <hr>
     a.btn.btn-secondary.btn-block.mt-4(href='/parts') Go Back

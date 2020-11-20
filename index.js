@@ -1,12 +1,15 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+var nodemailer = require('nodemailer');
+
 // the following allows you to serve static files
 app.use('/static', express.static('public'))
 
 //Mongodb connection new 10-22-20
 var mongoose = require('mongoose');
-var mongoDB='mongodb+srv://admin:Pergatory_1979@cluster0.3duu7.mongodb.net/local_library?retryWrites=true&w=majority';
+//var mongoDB='mongodb://localhost:27017/Inventory';
+var mongoDB = 'mongodb+srv://admin:Pergatory_1979@cluster0.3duu7.mongodb.net/local_library?retryWrites=true&w=majority'
 mongoose.connect(mongoDB,{useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console,'MongoDB connection error:'));
@@ -41,7 +44,24 @@ var removedboardSchema = mongoose.Schema({
     dateRemoved: String
 });
 var RemovedCard = mongoose.model("RemovedCard",removedboardSchema);
-
+//Database Model for Quote requests
+var requestQuoteSchema = mongoose.Schema({
+    partNumber: String,
+    serialNumber: String,
+    remanPrice: String,
+    exchangePrice: String,
+    stockedAS: String,
+    description1: String,
+    sapNumber: String,
+    price: String,
+    name: String,
+    company: String,
+    email: String,
+    phone: String,
+    message: String,
+    dateRequest: String
+});
+var RequestQuote = mongoose.model("RequestQuote",requestQuoteSchema);
 //Database Model for our parts
 var partSchema = mongoose.Schema({
     stockedAS: String,
@@ -81,7 +101,7 @@ app.get('/serialSearch', function(req,res){
 });
 app.post('/serialSearch', function(req,res){
     var search = req.body;
-    console.log(search)
+    //console.log(search)
      Card.find({serialNumber: {$regex: search.searchWord, $options: 'i'}},
          function(err,response){
              //console.log(response);
@@ -89,13 +109,11 @@ app.post('/serialSearch', function(req,res){
          }).limit(20);
  });
 
-
-
 //Route for items to be removed from the legacy database AND ALSO INSERTS INTO THE DELETED TABLE
 app.get('/del/:id/delete',function(req,res){
     test = Card.find({_id: req.params.id},
         function(err,response){
-            console.log(response[0].serialNumber)
+            //console.log(response[0].serialNumber)
             var today = new Date();
             var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
             var adddeleted = response[0];
@@ -119,6 +137,36 @@ app.get('/del/:id/delete',function(req,res){
                 res.redirect('/')
         });
 });
+
+//Route for cards to be inserted into the requestQuote table
+app.get('/del/:id/delete',function(req,res){
+    test = Card.find({_id: req.params.id},
+        function(err,response){
+            //console.log(response[0].serialNumber)
+            var today = new Date();
+            var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
+            var adddeleted = response[0];
+            var removedcard = new RemovedCard({
+                partNumber: adddeleted.partNumber,
+                serialNumber: adddeleted.serialNumber,
+                binNumber: adddeleted.binNumber,
+                binLocation: adddeleted.binLocation,
+                dateRemoved: date
+            });
+            removedcard.save(function(err,RemovedCard){
+                if(err)
+                    res.send("error");
+            });
+        });
+    //console.log(test)
+    Card.deleteOne({_id: req.params.id},
+        function(err){
+            if(err) res.json(err);
+            else
+                res.redirect('/')
+        });
+});
+
 //Route for items to be added to legacy database
 app.get('/addCard', function(req,res){
     res.render('addCard', {banner: 'Add To Legacy',message:''});
@@ -146,6 +194,7 @@ app.get('/edit', function(req,res)
 {
     res.render('editCard', {banner: 'Edit Entry', message:''});
 });
+
 
 //This begins the section for parts search
 app.get('/parts', function(req,res){
@@ -176,6 +225,7 @@ app.get ('/addPart', function(req,res){
     res.render('addPart')
 })
 app.post('/addPart', function(req,res){
+    //console.log(req.body);
     var partInfo = req.body;
     var newPart = new Part({
         stockedAS: partInfo.stockedAS,
@@ -200,5 +250,52 @@ app.post('/addPart', function(req,res){
     });
 });
 
+//Route to send Email to request quote for parts
+app.post ('/getRequest', function(req,res){
+    var item1=req.body.stockedAS
+    var item2=req.body.description1
+    var item3=req.body.sapNumber
+    var item4=req.body.price
+    //console.log(req.body);
+    res.render('requestPart', {banner: 'Parts Quote Request', message:'', item1, item2, item3, item4})
+    
+})
+app.post('/requestPart', function(req,res){
+    //console.log(req.body);
+    var today = new Date();
+    var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
+    var requestInfo = req.body;
+    var newRequest = new RequestQuote({
+        stockedAS: requestInfo.stockedAS,
+        description1: requestInfo.description1,
+        sapNumber: requestInfo.sapNumber,
+        price: requestInfo.price,
+        name: requestInfo.name,
+        company: requestInfo.company,
+        email: requestInfo.email,
+        phone: requestInfo.phone,
+        message: requestInfo.message,
+        dateRequest: date
+    });
+    newRequest.save(function(err,RequestQuote){
+        if(err)
+            res.send("error");
+        else
+            res.render('sentRequest', {banner: 'Parts Quote Request', message: 'Request Sent'});
+    });
+  });
+
+//This begins the section for parts/cards request search
+app.get('/requestSearch', function(req,res){
+	res.render('requestSearch', {banner: 'Search Quotes By Date', message:''});
+});
+app.post('/requestSearch', function(req,res){
+    var search = req.body;
+    RequestQuote.find({dateRequest: {$regex: search.searchWord, $options: 'i'}},
+        function(err,response){
+            res.render('requestSearchResults', {banner: 'Search Results', search,response, message:''});
+        }).limit(100);
+});
+ 
 //Port that the app sends to
-app.listen(3001);
+app.listen(3000);
