@@ -298,4 +298,5 @@ app.post('/requestSearch', function(req,res){
 });
  
 //Port that the app sends to
-app.listen(3000);
+//app.listen(3000);
+app.listen(process.env.PORT || 5000)
