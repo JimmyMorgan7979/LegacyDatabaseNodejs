@@ -298,4 +298,4 @@ app.post('/requestSearch', function(req,res){
 });
  
 //Port that the app sends to
-app.listen(3002);
+app.listen(3000);
