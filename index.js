@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
-var nodemailer = require('nodemailer');
+//var nodemailer = require('nodemailer');
 
 // the following allows you to serve static files
 app.use('/static', express.static('public'))
@@ -298,4 +298,4 @@ app.post('/requestSearch', function(req,res){
 });
  
 //Port that the app sends to
-app.listen(3000);
+app.listen(3002);
