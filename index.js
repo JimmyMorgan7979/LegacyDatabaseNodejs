@@ -286,15 +286,34 @@ app.post('/requestPart', function(req,res){
   });
 
 //This begins the section for parts/cards request search
-app.get('/requestSearch', function(req,res){
-	res.render('requestSearch', {banner: 'Search Quotes By Date', message:''});
-});
-app.post('/requestSearch', function(req,res){
-    var search = req.body;
-    RequestQuote.find({dateRequest: {$regex: search.searchWord, $options: 'i'}},
+//app.get('/requestSearch', function(req,res){
+//	res.render('requestSearch', {banner: 'Search Quotes By Date', message:''});
+//});
+//app.post('/requestSearch', function(req,res){
+//  var search = req.body;
+//    RequestQuote.find({dateRequest: {$regex: search.searchWord, $options: 'i'}},
+//        function(err,response){
+//            res.render('requestSearchResults', {banner: 'Search Results', search,response, message:''});
+ //       }).limit(100);
+//});
+
+
+//This begins the section for Monitoring of total parts requests and reorders
+app.get('/requests', function(req,res){
+    RequestQuote.countDocuments(
         function(err,response){
-            res.render('requestSearchResults', {banner: 'Search Results', search,response, message:''});
-        }).limit(100);
+            //console.log(response)
+            count = response
+            res.render('requests', {banner: 'Requests',count, message:''});
+        });
+});
+app.get('/requestedquotes',function(req,res){
+    RequestQuote.find(
+        function(err,response){
+            //console.log(response)
+            //res.send("Hello")
+            res.render('requestSearchResults', {banner: 'Requests',message:'',response});
+        });
 });
  
 //Port that the app sends to
