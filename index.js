@@ -250,6 +250,36 @@ app.post('/addPart', function(req,res){
     });
 });
 
+//Route to send Email to request quote for new parts
+app.get ('/requestNewPart', function(req,res){
+    res.render('requestNewPart', {banner: 'New Parts Quote Request', message:''})
+})
+
+app.post('/requestNewPart', function(req,res){
+    //console.log(req.body);
+    var today = new Date();
+    var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
+    var requestInfo = req.body;
+    var newRequest = new RequestQuote({
+        stockedAS: requestInfo.stockedAS,
+        description1: requestInfo.description1,
+        sapNumber: requestInfo.sapNumber,
+        price: requestInfo.price,
+        name: requestInfo.name,
+        company: requestInfo.company,
+        email: requestInfo.email,
+        phone: requestInfo.phone,
+        message: requestInfo.message,
+        dateRequest: date
+    });
+    newRequest.save(function(err,RequestQuote){
+        if(err)
+            res.send("error");
+        else
+            res.render('sentRequest', {banner: 'New Parts Quote Request', message: 'Request Sent'});
+    });
+  });
+
 //Route to send Email to request quote for parts
 app.post ('/getRequest', function(req,res){
     var item1=req.body.stockedAS

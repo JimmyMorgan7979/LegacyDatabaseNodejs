@@ -3,12 +3,5 @@ extends base
 block content
     form(action='/requestEmail', method='POST') 
         div.form-group.p-2.text-center
-            label(for='searchword') Request for Quote
-            input.form-control.my-3(type='text',name='name',placeholder='Name')
-            input.form-control.my-3(type='text',name='company',placeholder='Company Name')
-            input.form-control.my-3(type='text',name='email',placeholder='Email Address')
-            input.form-control.my-3(type='text',name='phone',placeholder='Phone Number')
-            textarea.form-control.my-3(name='message', rows=5, placeholder='Enter Message')
-            //button.btn.btn-danger.m-2(type='submit') Submit Request
             <hr>
     a.btn.btn-secondary.btn-block.mt-4(href='/parts') Go Back to Parts Search
