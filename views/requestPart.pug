@@ -4,12 +4,11 @@ block content
     div.text-center.mb-4.h5 Requested Part
     ol.list-unstyled
         li.my-3
-            form(action='/getRequest', method="POST") 
-                | Stocked As: #{item1}</br>
-                | Description: #{item2}</br>
-                | SAP Number: #{item3}</br>
-                | List Price: #{item4}</br>
-                <hr>
+            //form(action='/getRequest', method="POST") 
+            |Stocked As: #{item1}</br>
+            |Description: #{item2}</br>
+            | SAP Number: #{item3}</br>
+            | List Price: #{item4}</br>
             form(action='/requestPart', method='POST') 
                 div.form-group.p-2.text-center
                     label(for='searchword') Contact Info
