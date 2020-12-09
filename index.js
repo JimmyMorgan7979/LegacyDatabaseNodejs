@@ -294,9 +294,10 @@ app.get('/requests', function(req,res){
     RequestQuote.countDocuments(
         function(err,response){
             count = response
-            res.render('requests', {banner: 'Requests',count, message:''});
+            res.render('requests', {banner: 'Requests',count, message:''}); 
         });
 });
+//route to display all quote requests
 app.get('/requestedquotes',function(req,res){
     RequestQuote.find(
         function(err,response){
@@ -314,12 +315,29 @@ app.get('/delete/:id/delete',function(req,res){
         });
     });
 
+//route to display all part reorders
+app.get('/restock',function(req,res){
+    RestockPart.find(
+        function(err,response){
+            res.render('restockSearchResults', {banner: 'Part Restocks',message:'',response});
+        });
+});
+//route to delete restock requests from the table
+app.get('/deleterequest/:id/delete',function(req,res){
+    RestockPart.deleteOne({_id: req.params.id},
+        function(err){
+            if(err) res.json(err);
+            else
+                res.redirect('/requests')
+        });
+    });
+
+
 //Begins the section for parts restock requests
 app.post('/restockPart', function(req,res){
     var restockAS = req.body.stockedAS
     var restockdescription1 = req.body.description1
     var restocksapNumber = req.body.sapNumber
-    //res.render('#', {banner: 'Parts Quote Request', message:'', item1, item2, item3, item4})
     res.render('restockPart', {banner: 'Restock Order',message:'',restockAS,restockdescription1,restocksapNumber});
 })
 app.post('/restockOrder', function(req,res){
@@ -327,7 +345,6 @@ app.post('/restockOrder', function(req,res){
     var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
     var restockInfo = req.body; //needs to match form
     var restockPart = new RestockPart({
-        /////////////////////////
         stockedAS: restockInfo.stockedAS,
         description1: restockInfo.description1,
         sapNumber: restockInfo.sapNumber,

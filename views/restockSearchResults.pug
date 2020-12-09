@@ -1,0 +1,25 @@
+extends base
+
+block content
+    div.text-center.mb-4.h5 
+        //|Search results for "#{search.searchWord}"
+    ol.list-unstyled
+        each item in response
+            li.my-3
+                form(action='POST') 
+                    | Date of Request: #{item.daterequested}</br>
+                    if item.stockedAS
+                        | Stocked As: #{item.stockedAS}</br>
+                    if item.description1
+                        | Description: #{item.description1}</br>
+                    if item.sapNumber
+                        | Sap Number: #{item.sapNumber}</br>
+                    if item.quantity
+                        | Quantity Requested: #{item.quantity}</br>
+                    if item.requestor
+                        | Requested By: #{item.requestor}</br>
+
+                    
+                    a.btn.btn-danger.btn-sm.mt-2(id="deletebutton",href=`/deleterequest/${item._id}/delete`) Remove From List
+                    <hr>
+    a.btn.btn-secondary.btn-block.mt-4(href='/') Go Back
