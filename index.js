@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 app.set('view engine', 'pug');
 app.set('views', './views');
 
-//Database Model for our boards
+//Database Model for our Cards
 var boardSchema = mongoose.Schema({
     partNumber: String,
     serialNumber: String,
@@ -65,6 +65,7 @@ var removedPartSchema = mongoose.Schema({
 });
 var RemovedPart = mongoose.model("RemovedPart",removedPartSchema);
 
+
 //Database Model for Quote requests
 var requestQuoteSchema = mongoose.Schema({
     partNumber: String,
@@ -102,6 +103,17 @@ var partSchema = mongoose.Schema({
 });
 var Part = mongoose.model("Part", partSchema);
 
+//Database Model for parts RESTOCK
+var restockPartSchema = mongoose.Schema({
+    stockedAS: String,
+    description1: String,
+    sapNumber: String,
+    quantity: String,
+    requestor: String,
+    daterequested: String
+});
+var RestockPart = mongoose.model("RestockPart", restockPartSchema);
+
 // Route for legacy home page
 app.get('/', function(req,res){
 	res.render('home', {banner: 'Legacy Search', message:''});
@@ -110,10 +122,8 @@ app.get('/', function(req,res){
 //Route for search by Model Number results to be displayed
 app.post('/searchresult', function(req,res){
    var search = req.body;
-   //console.log(search)
     Card.find({partNumber: {$regex: search.searchWord, $options: 'i'}},
         function(err,response){
-            //console.log(response);
             res.render('searchResult', {banner: 'Search Results', search,response, message:''});
         }).limit(20);
 });
@@ -123,10 +133,8 @@ app.get('/serialSearch', function(req,res){
 });
 app.post('/serialSearch', function(req,res){
     var search = req.body;
-    //console.log(search)
      Card.find({serialNumber: {$regex: search.searchWord, $options: 'i'}},
          function(err,response){
-             //console.log(response);
              res.render('serialSearchResult', {banner: 'Search Results', search,response, message:''});
          }).limit(20);
  });
@@ -135,7 +143,6 @@ app.post('/serialSearch', function(req,res){
 app.get('/del/:id/delete',function(req,res){
     test = Card.find({_id: req.params.id},
         function(err,response){
-            //console.log(response[0].serialNumber)
             var today = new Date();
             var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
             var adddeleted = response[0];
@@ -151,7 +158,7 @@ app.get('/del/:id/delete',function(req,res){
                     res.send("error");
             });
         });
-    //console.log(test)
+
     Card.deleteOne({_id: req.params.id},
         function(err){
             if(err) res.json(err);
@@ -159,8 +166,6 @@ app.get('/del/:id/delete',function(req,res){
                 res.redirect('/')
         });
 });
-
-
 
 //Route for items to be added to legacy database
 app.get('/addCard', function(req,res){
@@ -222,7 +227,6 @@ app.get ('/addPart', function(req,res){
     res.render('addPart')
 })
 app.post('/addPart', function(req,res){
-    //console.log(req.body);
     var partInfo = req.body;
     var newPart = new Part({
         stockedAS: partInfo.stockedAS,
@@ -331,7 +335,6 @@ app.get ('/requestNewPart', function(req,res){
 })
 
 app.post('/requestNewPart', function(req,res){
-    //console.log(req.body);
     var today = new Date();
     var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
     var requestInfo = req.body;
@@ -361,12 +364,10 @@ app.post ('/getRequest', function(req,res){
     var item2=req.body.description1
     var item3=req.body.sapNumber
     var item4=req.body.price
-    //console.log(req.body);
     res.render('requestPart', {banner: 'Parts Quote Request', message:'', item1, item2, item3, item4})
     
 })
 app.post('/requestPart', function(req,res){
-    //console.log(req.body);
     var today = new Date();
     var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
     var requestInfo = req.body;
@@ -394,24 +395,79 @@ app.post('/requestPart', function(req,res){
 app.get('/requests', function(req,res){
     RequestQuote.countDocuments(
         function(err,response){
-            //console.log(response)
             count = response
-            res.render('requests', {banner: 'Requests',count, message:''});
+            res.render('requests', {banner: 'Requests',count, message:''}); 
         });
 });
+//route to display all quote requests
 app.get('/requestedquotes',function(req,res){
     RequestQuote.find(
         function(err,response){
-            //console.log(response)
-            //res.send("Hello")
             res.render('requestSearchResults', {banner: 'Requests',message:'',response});
         });
 });
+
 
 //Route to Admin page
 app.get ('/partAdmin', function(req,res){
     res.render('partAdmin', {banner: 'Admin',message:''})
 })
+
+//Begins the section to delete quote requests from the table
+app.get('/delete/:id/delete',function(req,res){
+    RequestQuote.deleteOne({_id: req.params.id},
+        function(err){
+            if(err) res.json(err);
+            else
+                res.redirect('/requests')
+        });
+    });
+
+//route to display all part reorders
+app.get('/restock',function(req,res){
+    RestockPart.find(
+        function(err,response){
+            res.render('restockSearchResults', {banner: 'Part Restocks',message:'',response});
+        });
+});
+//route to delete restock requests from the table
+app.get('/deleterequest/:id/delete',function(req,res){
+    RestockPart.deleteOne({_id: req.params.id},
+        function(err){
+            if(err) res.json(err);
+            else
+                res.redirect('/requests')
+        });
+    });
+
+
+//Begins the section for parts restock requests
+app.post('/restockPart', function(req,res){
+    var restockAS = req.body.stockedAS
+    var restockdescription1 = req.body.description1
+    var restocksapNumber = req.body.sapNumber
+    res.render('restockPart', {banner: 'Restock Order',message:'',restockAS,restockdescription1,restocksapNumber});
+})
+app.post('/restockOrder', function(req,res){
+    var today = new Date();
+    var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
+    var restockInfo = req.body; //needs to match form
+    var restockPart = new RestockPart({
+        stockedAS: restockInfo.stockedAS,
+        description1: restockInfo.description1,
+        sapNumber: restockInfo.sapNumber,
+        quantity: restockInfo.quantity,
+        requestor: restockInfo.requestor,
+        daterequested: date
+    });
+    restockPart.save(function(err,RestockPart){
+        if(err)
+            res.send("error");
+        else
+            res.render('home', {banner: 'Restock Order', message: 'Part Ordered'});
+    }) ;
+});
+
  
 //Port that the app sends to
 //app.listen(3000);
