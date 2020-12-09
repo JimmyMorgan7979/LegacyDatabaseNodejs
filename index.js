@@ -33,6 +33,7 @@ var boardSchema = mongoose.Schema({
     dateReceived: String
 });
 var Card = mongoose.model("Card", boardSchema);
+
 //DATABASE MODEL FOR REMOVED CARDS
 var removedboardSchema = mongoose.Schema({
     partNumber: String,
@@ -44,6 +45,26 @@ var removedboardSchema = mongoose.Schema({
     dateRemoved: String
 });
 var RemovedCard = mongoose.model("RemovedCard",removedboardSchema);
+
+//DATABASE MODEL FOR REMOVED PARTS
+var removedPartSchema = mongoose.Schema({
+    stockedAS: String,
+    description1: String,
+    sapNumber: String,
+    manufacturer: String,
+    description2: String,
+    location1: String,
+    location2: String,
+    location3: String,
+    drawer: String,
+    cross1: String,
+    cross2: String,
+    cross3: String,
+    price: String,
+    dateRemoved: String
+});
+var RemovedPart = mongoose.model("RemovedPart",removedPartSchema);
+
 
 //Database Model for Quote requests
 var requestQuoteSchema = mongoose.Schema({
@@ -137,6 +158,7 @@ app.get('/del/:id/delete',function(req,res){
                     res.send("error");
             });
         });
+
     Card.deleteOne({_id: req.params.id},
         function(err){
             if(err) res.json(err);
@@ -178,6 +200,7 @@ app.get('/edit', function(req,res)
 app.get('/parts', function(req,res){
     res.render('partSearchhome', {banner: 'Parts Search', message:''});
 });
+
 //display parts search results
 app.post('/partSearchResult', function(req,res){
     var search = req.body;
@@ -186,6 +209,7 @@ app.post('/partSearchResult', function(req,res){
             res.render('partSearchResult', {banner: 'Search Results', search,response, message:''});
         }).limit(20);
 });
+
 //THIS BEGINS THE SECTION FOR SEARCH PARTS BY LV NUMBER
 app.get('/lvSearch', function(req,res){
 	res.render('partSearchLVHome', {banner: 'Search By "LV" Number', message:''});
@@ -223,8 +247,86 @@ app.post('/addPart', function(req,res){
         if(err)
             res.send("error");
         else
-            res.render('partSearchhome', {banner: 'Parts Search', message: 'Added Record to DB'});
+            res.render('partAdmin', {banner: 'Parts Search', message: 'Added Part to DB'});
     });
+});
+//
+// Edit function for parts database
+app.get('/editParts', function(req,res)
+{
+    res.render('editPart', {banner: 'Edit Entry', message:''});
+});
+
+app.post('/editPart', function(req,res){
+    //console.log(req.body);
+    var partInfo = req.body;
+    var newPart = new Part({
+        stockedAS: partInfo.stockedAS,
+        description1: partInfo.description1,
+        sapNumber: partInfo.sapNumber,
+        manufacturer: partInfo.manufacturer,
+        description2: partInfo.description2,
+        location1: partInfo.location1,
+        location2: partInfo.location2,
+        location3: partInfo.location3,
+        drawer: partInfo.drawer,
+        cross1: partInfo.cross1,
+        cross2: partInfo.cross2,
+        cross3: partInfo.cross3,
+        price: partInfo.price
+    });
+    newPart.save(function(err,Card){
+        if(err)
+            res.send("error");
+        else
+            res.render('partAdmin', {banner: 'Parts Search', message: 'Added Part to DB'});
+    });
+});
+//
+//Route for parts to be inserted into the parts delete table
+app.post('/delPart', function(req,res){
+    var search = req.body;
+    Part.find({stockedAS: {$eq: search.searchWord}},
+        function(err,response){
+            //console.log(search,response)
+            res.render('delPart', {banner: 'Search Results', search,response, message:''});
+        }).limit(20);
+})
+
+app.get('/delpart/:id/delete',function(req,res){
+    test = Part.find({_id: req.params.id},
+        function(err,response){
+            var today = new Date();
+            var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
+            var adddeleted = response[0];
+            var removedpart = new RemovedPart({
+                stockedAS: adddeleted.stockedAS,
+                description1: adddeleted.description1,
+                sapNumber: adddeleted.sapNumber,
+                manufacturer: adddeleted.manufacturer,
+                description2: adddeleted.description2,
+                location1: adddeleted.location1,
+                location2: adddeleted.location2,
+                location3: adddeleted.location3,
+                drawer: adddeleted.drawer,
+                cross1: adddeleted.cross1,
+                cross2: adddeleted.cross2,
+                cross3: adddeleted.cross3,
+                price: adddeleted.price,
+                dateRemoved: date
+            });
+            removedpart.save(function(err,RemovedPart){
+                if(err)
+                    res.send("error");
+            });
+        });
+    //console.log(test)
+    Part.deleteOne({_id: req.params.id},
+        function(err){
+            if(err) res.json(err);
+            else
+                res.redirect('/partAdmin')
+        });
 });
 
 //Route to send Email to request quote for new parts
@@ -305,6 +407,12 @@ app.get('/requestedquotes',function(req,res){
         });
 });
 
+
+//Route to Admin page
+app.get ('/partAdmin', function(req,res){
+    res.render('partAdmin', {banner: 'Admin',message:''})
+})
+
 //Begins the section to delete quote requests from the table
 app.get('/delete/:id/delete',function(req,res){
     RequestQuote.deleteOne({_id: req.params.id},
@@ -359,6 +467,7 @@ app.post('/restockOrder', function(req,res){
             res.render('home', {banner: 'Restock Order', message: 'Part Ordered'});
     }) ;
 });
+
  
 //Port that the app sends to
 //app.listen(3000);

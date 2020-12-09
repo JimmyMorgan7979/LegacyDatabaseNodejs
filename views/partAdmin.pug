@@ -1,0 +1,17 @@
+extends base
+
+block content
+    div.text-center.mb-4.h5 Admin for Parts DB
+    ol.list-unstyled
+        li.my-3
+            form(action='/delPart', method='POST')
+                div.form-group.p-2.text-center
+                    label(for='searchword')
+                    small <br> Don't know your exact part or revision number? <br> You can enter a partial number. EX: 104x123 or
+                    a.small.ml-1(href="/lvSearch") Search by "LV" Number
+                    input.form-control.my-3(type='text',name='searchWord',placeholder='Enter a search value')
+                    button.btn.btn-danger.m-2(type='submit') Search for Part to Delete
+                    a.btn.btn-primary.m-2(href='/editPart') Edit Part in DB
+                div.form-group.p-2.text-center
+                    a.btn.btn-success.m-2(href='/addPart') Add Part to DB
+                    //a.btn.btn-danger.m-2(href='/delPart') Delete Part in DB             
