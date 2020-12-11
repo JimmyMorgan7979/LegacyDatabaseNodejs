@@ -417,7 +417,7 @@ app.get ('/partAdmin', function(req,res){
 
 //Route to Admin page to search by SAP part number
 app.get ('/partAdminLV', function(req,res){
-    res.render('partAdminlv', {banner: 'Admin',message:''})
+    res.render('partAdminLV', {banner: 'Admin',message:''})
 })
  
 //Port that the app sends to
