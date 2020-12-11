@@ -8,8 +8,8 @@ app.use('/static', express.static('public'))
 
 //Mongodb connection new 10-22-20
 var mongoose = require('mongoose');
-//var mongoDB='mongodb://localhost:27017/Inventory';
-var mongoDB = 'mongodb+srv://admin:Pergatory_1979@cluster0.3duu7.mongodb.net/local_library?retryWrites=true&w=majority'
+var mongoDB='mongodb://localhost:27017/Inventory';
+//var mongoDB = 'mongodb+srv://admin:Pergatory_1979@cluster0.3duu7.mongodb.net/local_library?retryWrites=true&w=majority'
 mongoose.connect(mongoDB,{useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console,'MongoDB connection error:'));
@@ -219,10 +219,9 @@ app.post('/lvSearch', function(req,res){
 
 //Route to add parts
 app.get ('/addPart', function(req,res){
-    res.render('addPart')
+    res.render('addPart', {banner: 'Add Part to DB', message: ''})
 })
 app.post('/addPart', function(req,res){
-    //console.log(req.body);
     var partInfo = req.body;
     var newPart = new Part({
         stockedAS: partInfo.stockedAS,
@@ -239,56 +238,58 @@ app.post('/addPart', function(req,res){
         cross3: partInfo.cross3,
         price: partInfo.price
     });
-    newPart.save(function(err,Card){
+    newPart.save(function(err,Part){
         if(err)
             res.send("error");
         else
             res.render('partAdmin', {banner: 'Parts Search', message: 'Added Part to DB'});
     });
-});
-//
-// Edit function for parts database
-app.get('/editParts', function(req,res)
-{
-    res.render('editPart', {banner: 'Edit Entry', message:''});
 });
 
-app.post('/editPart', function(req,res){
-    //console.log(req.body);
-    var partInfo = req.body;
-    var newPart = new Part({
-        stockedAS: partInfo.stockedAS,
-        description1: partInfo.description1,
-        sapNumber: partInfo.sapNumber,
-        manufacturer: partInfo.manufacturer,
-        description2: partInfo.description2,
-        location1: partInfo.location1,
-        location2: partInfo.location2,
-        location3: partInfo.location3,
-        drawer: partInfo.drawer,
-        cross1: partInfo.cross1,
-        cross2: partInfo.cross2,
-        cross3: partInfo.cross3,
-        price: partInfo.price
-    });
-    newPart.save(function(err,Card){
-        if(err)
-            res.send("error");
-        else
-            res.render('partAdmin', {banner: 'Parts Search', message: 'Added Part to DB'});
-    });
-});
-//
-//Route for parts to be inserted into the parts delete table
-app.post('/delPart', function(req,res){
+// Routes to edit parts
+app.post('/updatePart', function(req,res){
     var search = req.body;
-    Part.find({stockedAS: {$eq: search.searchWord}},
+        Part.find({stockedAS: {$eq: search.searchWord}},
         function(err,response){
-            //console.log(search,response)
-            res.render('delPart', {banner: 'Search Results', search,response, message:''});
-        }).limit(20);
+            res.render('editPart', {banner: 'Search Results to Update Parts Record', search,response, message:''});
+        }).limit(1);
+ });
+
+ app.post('/updateLVPart', function(req,res){
+    var search = req.body;
+        Part.find({sapNumber: {$eq: search.searchWord}},
+        function(err,response){
+            res.render('editPart', {banner: 'Search Results to Update Parts Record', search,response, message:''});
+        }).limit(1);
+ });
+
+// Edit function for parts database
+app.post('/editpart/:id', function(req,res){
+    var updatepart = {_id: req.params.id}
+    var addedit = req.body
+    //console.log(req.body)
+    Part.findOneAndUpdate(updatepart, addedit,
+        function (err, docs) { 
+            if (err){ 
+                console.log(err) 
+            } 
+            else{ 
+                res.redirect('/partAdmin') 
+            } 
 })
 
+//    Part.findByIdAndUpdate(updatepart, req.body)
+//        .then(doc => {
+//            if (!doc) { return res.status(404).end();}
+//            return res.redirect('/partAdmin')
+//        })
+//        .catch(err => next(err));
+    })
+
+
+        
+
+//Route for parts to be deleted and inserted into the parts delete table
 app.get('/delpart/:id/delete',function(req,res){
     test = Part.find({_id: req.params.id},
         function(err,response){
@@ -316,10 +317,10 @@ app.get('/delpart/:id/delete',function(req,res){
                     res.send("error");
             });
         });
-    //console.log(test)
     Part.deleteOne({_id: req.params.id},
         function(err){
-            if(err) res.json(err);
+            if(err) 
+                res.json(err);
             else
                 res.redirect('/partAdmin')
         });
@@ -408,9 +409,15 @@ app.get('/requestedquotes',function(req,res){
         });
 });
 
-//Route to Admin page
+//Route to Admin page to search by Stocked As part number
 app.get ('/partAdmin', function(req,res){
     res.render('partAdmin', {banner: 'Admin',message:''})
+})
+
+
+//Route to Admin page to search by SAP part number
+app.get ('/partAdminLV', function(req,res){
+    res.render('partAdminlv', {banner: 'Admin',message:''})
 })
  
 //Port that the app sends to
