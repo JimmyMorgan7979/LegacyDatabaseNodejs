@@ -2,7 +2,7 @@ extends base
 
 block content
 
-    form(action='/searchResult', method='POST',onsubmit="return validateForm()",name = "form" required) 
+    form(action='/searchResult', method='POST',name = "form") 
         div.form-group.p-2
             label.h5(for='searchword') Enter a Board Number to Search our Legacy Stock
             small <br> Don't konw your exact part or revision number? <br> You can enter a partial number. EX: DS200LRPA or 
