@@ -2,6 +2,7 @@ extends base
 
 block content
     div.text-center.mb-4.h5 Admin for Parts DB
+<<<<<<< HEAD
         form(action='/delPart', method='POST')
             div.form-group.p-2.text-center
                 label(for='searchword')
@@ -16,3 +17,16 @@ block content
                 a.btn.btn-danger.m-2(href='/restock') Restock Requests
                     
                 a.btn.btn-danger.m-2(href='/requestedquotes') Parts Order Requests          
+=======
+    form(action='/updatePart', method='POST')
+        div.form-group.p-2.text-center
+            label(for='searchword')
+            small <br> Please enter the exact part number.  or
+            a.small.ml-1(href="/partAdminLV") Search by "LV" Number
+            input.form-control.my-3(type='text',name='searchWord',placeholder='Enter Stocked As part # ')
+            button.btn.btn-danger.m-2(type='submit') Search for Part to Edit
+            //a.btn.btn-primary.m-2(href='/editPart') Edit Part in DB
+        div.form-group.p-2.text-center
+            a.btn.btn-success.m-2(href='/addPart') Add Part to DB
+            //a.btn.btn-danger.m-2(href='/delPart') Delete Part in DB             
+>>>>>>> 11b3c8a2ebaea3b571d4ac60f37c4adc7a86845c
