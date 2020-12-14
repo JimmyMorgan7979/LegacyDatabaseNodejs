@@ -394,14 +394,15 @@ app.post('/requestPart', function(req,res){
   });
 
 //This begins the section for Monitoring of total parts requests and reorders
-app.get('/requests', function(req,res){
-    RequestQuote.countDocuments(
-        function(err,response){
-            count = response
-            res.render('requests', {banner: 'Requests',count, message:''}); 
-        });
-});
+//app.get('/requests', function(req,res){
+//    RequestQuote.countDocuments(
+//        function(err,response){
+//            count = response
+//            res.render('requests', {banner: 'Requests',count, message:''}); 
+//        });
+//});
 //route to display all quote requests
+/////////////////////THIS NEEDS TO BE ADDED TO THE ADMIN PAGE
 app.get('/requestedquotes',function(req,res){
     RequestQuote.find(
         function(err,response){
@@ -419,6 +420,63 @@ app.get ('/partAdmin', function(req,res){
 app.get ('/partAdminLV', function(req,res){
     res.render('partAdminLV', {banner: 'Admin',message:''})
 })
+///////////////////////////////////////////////////////////////////////////////////
+//Begins the section to delete quote requests from the table
+app.get('/delete/:id/delete',function(req,res){
+    RequestQuote.deleteOne({_id: req.params.id},
+        function(err){
+            if(err) res.json(err);
+            else
+                res.redirect('/requests')
+        });
+    });
+//route to display all part reorders
+////////////////############pROBLEM IS HERE
+app.get('/restock',function(req,res){
+    RestockPart.find(function(err,response){
+        res.render('restockSearchResults', {banner:'Part Restocks',message:'',response});
+    });
+});
+
+    //route to delete restock requests from the table
+    app.get('/deleterequest/:id/delete',function(req,res){
+        RestockPart.deleteOne({_id: req.params.id},
+            function(err){
+                if(err) res.json(err);
+                else
+                    res.redirect('/requests')
+            });
+        });
+    
+    
+
+app.post('/restockPart', function(req,res){
+    var restockAS = req.body.stockedAS
+    var restockdescription1 = req.body.description1
+    var restocksapNumber = req.body.sapNumber
+    res.render('restockPart', {banner: 'Restock Order',message:'',restockAS,restockdescription1,restocksapNumber});
+})
+app.post('/restockOrder', function(req,res){
+    var today = new Date();
+    var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
+    var restockInfo = req.body; //needs to match form
+    var restockPart = new RestockPart({
+        stockedAS: restockInfo.stockedAS,
+        description1: restockInfo.description1,
+        sapNumber: restockInfo.sapNumber,
+        quantity: restockInfo.quantity,
+        requestor: restockInfo.requestor,
+        daterequested: date
+    });
+    restockPart.save(function(err,RestockPart){
+        if(err)
+            res.send("error");
+        else
+            res.render('home', {banner: 'Restock Order', message: 'Part Ordered'});
+    }) ;
+});
+
+
  
 //Port that the app sends to
 //app.listen(3000);
