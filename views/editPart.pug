@@ -6,8 +6,6 @@ block content
         each item in response
             li.my-3
                 form(action=`/editpart/${item._id}`, method='POST') 
-                    //div.form-group.p-2.text-center
-                    //label(for='searchword') Edit Information
                     input.form-control.my-3(type='text',name='stockedAS',placeholder='Stocked As',value=`${item.stockedAS}`)
                     input.form-control.my-3(type='text',name='description1',placeholder='Description of Part',value=`${item.description1}`)
                     input.form-control.my-3(type='text',name='description2',placeholder='Additional Description',value=`${item.description2}`)
@@ -22,6 +20,5 @@ block content
                     input.form-control.my-3(type='text',name='cross3',placeholder='Cross 3',value=`${item.cross3}`)
                     input.form-control.my-3(type='text',name='price',placeholder='List Price',value=`${item.price}`)
                     button.btn.btn-primary.m-2(type='submit') Submit Changes
-                    //a.btn.btn-primary.m-2(id="editbutton",href=`/editpart/${item._id}` disable) Submit Changes
                     a.btn.btn-danger.m-2(id="deletebutton",href=`/delpart/${item._id}/delete` disable) Delete Part
                     a.btn.btn-secondary.m-2(href='/partAdmin') Go Back to Admin Page

@@ -1,7 +1,6 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
-//var nodemailer = require('nodemailer');
 
 // the following allows you to serve static files
 app.use('/static', express.static('public'))
@@ -272,7 +271,6 @@ app.post('/updatePart', function(req,res){
 app.post('/editpart/:id', function(req,res){
     var updatepart = {_id: req.params.id}
     var addedit = req.body
-    //console.log(req.body)
     Part.findOneAndUpdate(updatepart, addedit,
         function (err, docs) { 
             if (err){ 
@@ -281,15 +279,8 @@ app.post('/editpart/:id', function(req,res){
             else{ 
                 res.redirect('/partAdmin') 
             } 
-})
-
-//    Part.findByIdAndUpdate(updatepart, req.body)
-//        .then(doc => {
-//            if (!doc) { return res.status(404).end();}
-//            return res.redirect('/partAdmin')
-//        })
-//        .catch(err => next(err));
     })
+})
 
 
         
@@ -358,7 +349,7 @@ app.post('/requestNewPart', function(req,res){
         else
             res.render('sentRequest', {banner: 'New Parts Quote Request', message: 'Request Sent'});
     });
-  });
+});
 
 //Route to send Email to request quote for parts
 app.post ('/getRequest', function(req,res){
@@ -393,16 +384,7 @@ app.post('/requestPart', function(req,res){
     });
   });
 
-//This begins the section for Monitoring of total parts requests and reorders
-//app.get('/requests', function(req,res){
-//    RequestQuote.countDocuments(
-//        function(err,response){
-//            count = response
-//            res.render('requests', {banner: 'Requests',count, message:''}); 
-//        });
-//});
-//route to display all quote requests
-/////////////////////THIS NEEDS TO BE ADDED TO THE ADMIN PAGE
+
 app.get('/requestedquotes',function(req,res){
     RequestQuote.find(
         function(err,response){
@@ -420,7 +402,7 @@ app.get ('/partAdmin', function(req,res){
 app.get ('/partAdminLV', function(req,res){
     res.render('partAdminLV', {banner: 'Admin',message:''})
 })
-///////////////////////////////////////////////////////////////////////////////////
+
 //Begins the section to delete quote requests from the table
 app.get('/delete/:id/delete',function(req,res){
     RequestQuote.deleteOne({_id: req.params.id},
@@ -431,7 +413,7 @@ app.get('/delete/:id/delete',function(req,res){
         });
     });
 //route to display all part reorders
-////////////////############pROBLEM IS HERE
+
 app.get('/restock',function(req,res){
     RestockPart.find(function(err,response){
         res.render('restockSearchResults', {banner:'Part Restocks',message:'',response});
