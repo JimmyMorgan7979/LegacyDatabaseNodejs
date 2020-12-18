@@ -18,8 +18,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //to parse json data
 app.use(bodyParser.json());
-app.set('view engine', 'pug');
-app.set('views', './views');
+
+//SETS THE VIEW ENGINE 
+//app.set('view engine', 'pug');
+app.set('view engine','ejs');
+//app.set('views', './views');
 
 //Database Model for our Cards
 var boardSchema = mongoose.Schema({
@@ -114,10 +117,12 @@ var restockPartSchema = mongoose.Schema({
 var RestockPart = mongoose.model("RestockPart", restockPartSchema);
 
 // Route for legacy home page
+//app.get('/', function(req,res){
+//	res.render('home', {banner: 'Legacy Search', message:''});
+//});
 app.get('/', function(req,res){
-	res.render('home', {banner: 'Legacy Search', message:''});
-});
-
+    res.render('pages/index');
+})
 //Route for search by Model Number results to be displayed
 app.post('/searchresult', function(req,res){
    var search = req.body;
