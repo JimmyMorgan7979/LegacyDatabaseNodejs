@@ -116,24 +116,22 @@ var restockPartSchema = mongoose.Schema({
 });
 var RestockPart = mongoose.model("RestockPart", restockPartSchema);
 
-// Route for legacy home page
-//app.get('/', function(req,res){
-//	res.render('home', {banner: 'Legacy Search', message:''});
-//});
+// Route for "LEGACY SEARCH"
 app.get('/', function(req,res){
-    res.render('pages/index');
+    res.render('pages/home',{banner: "Legacy Search", message: ""});
 })
 //Route for search by Model Number results to be displayed
 app.post('/searchresult', function(req,res){
    var search = req.body;
     Card.find({partNumber: {$regex: search.searchWord, $options: 'i'}},
         function(err,response){
-            res.render('searchResult', {banner: 'Search Results', search,response, message:''});
+            res.render('pages/searchResult', {banner: 'Search Results', search,response, message:''});
+            console.log(response)
         }).limit(20);
 });
 //THIS SECTION IS FOR "SEARCH BY SERIAL NUMBER"
 app.get('/serialSearch', function(req,res){
-	res.render('serialSearch', {banner: 'Search By Serial Number', message:''});
+	res.render('pages/serialSearch', {banner: 'Search By Serial Number', message:''});
 });
 app.post('/serialSearch', function(req,res){
     var search = req.body;
@@ -173,7 +171,7 @@ app.get('/del/:id/delete',function(req,res){
 
 //Route for items to be added to legacy database
 app.get('/addCard', function(req,res){
-    res.render('addCard', {banner: 'Add To Legacy',message:''});
+    res.render('pages/addCard', {banner: 'Add To Legacy',message:''});
 })
 app.post('/addCard', function(req,res){
     var today = new Date();
@@ -190,19 +188,19 @@ app.post('/addCard', function(req,res){
         if(err)
             res.send("error");
         else
-            res.render('home', {banner: 'Legacy', message: 'Added Record to DB'});
+            res.render('pages/home', {banner: 'Legacy', message: 'Added Record to DB'});
     }) ;
 });
 // Edit function for legacy database
 app.get('/edit', function(req,res)
 {
-    res.render('editCard', {banner: 'Edit Entry', message:''});
+    res.render('pages/editCard', {banner: 'Edit Entry', message:''});
 });
 
 
 //This begins the section for parts search
 app.get('/parts', function(req,res){
-    res.render('partSearchhome', {banner: 'Parts Search', message:''});
+    res.render('pages/partSearchhome', {banner: 'Parts Search', message:''});
 });
 
 //display parts search results
@@ -216,7 +214,7 @@ app.post('/partSearchResult', function(req,res){
 
 //THIS BEGINS THE SECTION FOR SEARCH PARTS BY LV NUMBER
 app.get('/lvSearch', function(req,res){
-	res.render('partSearchLVHome', {banner: 'Search By "LV" Number', message:''});
+	res.render('pages/partSearchLVHome', {banner: 'Search By "LV" Number', message:''});
 });
 app.post('/lvSearch', function(req,res){
     var search = req.body;
@@ -228,7 +226,7 @@ app.post('/lvSearch', function(req,res){
 
 //Route to add parts
 app.get ('/addPart', function(req,res){
-    res.render('addPart', {banner: 'Add Part to DB', message: ''})
+    res.render('pages/addPart', {banner: 'Add Part to DB', message: ''})
 })
 app.post('/addPart', function(req,res){
     var partInfo = req.body;
@@ -251,7 +249,7 @@ app.post('/addPart', function(req,res){
         if(err)
             res.send("error");
         else
-            res.render('partAdmin', {banner: 'Parts Search', message: 'Added Part to DB'});
+            res.render('pages/partAdmin', {banner: 'Parts Search', message: 'Added Part to DB'});
     });
 });
 
@@ -329,7 +327,7 @@ app.get('/delpart/:id/delete',function(req,res){
 
 //Route to send Email to request quote for new parts
 app.get ('/requestNewPart', function(req,res){
-    res.render('requestNewPart', {banner: 'New Parts Quote Request', message:''})
+    res.render('pages/requestNewPart', {banner: 'New Parts Quote Request', message:''})
 })
 
 app.post('/requestNewPart', function(req,res){
@@ -399,13 +397,13 @@ app.get('/requestedquotes',function(req,res){
 
 //Route to Admin page to search by Stocked As part number
 app.get ('/partAdmin', function(req,res){
-    res.render('partAdmin', {banner: 'Admin',message:''})
+    res.render('pages/partAdmin', {banner: 'Admin',message:''})
 })
 
 
 //Route to Admin page to search by SAP part number
 app.get ('/partAdminLV', function(req,res){
-    res.render('partAdminLV', {banner: 'Admin',message:''})
+    res.render('pages/partAdminLV', {banner: 'Admin',message:''})
 })
 
 //Begins the section to delete quote requests from the table
@@ -414,14 +412,14 @@ app.get('/delete/:id/delete',function(req,res){
         function(err){
             if(err) res.json(err);
             else
-                res.redirect('/requests')
+                res.redirect('/partAdmin')
         });
     });
 //route to display all part reorders
 
 app.get('/restock',function(req,res){
     RestockPart.find(function(err,response){
-        res.render('restockSearchResults', {banner:'Part Restocks',message:'',response});
+        res.render('pages/restockSearchResults', {banner:'Part Restocks',message:'',response});
     });
 });
 
@@ -431,7 +429,7 @@ app.get('/restock',function(req,res){
             function(err){
                 if(err) res.json(err);
                 else
-                    res.redirect('/requests')
+                    res.redirect('/partAdmin')
             });
         });
     
