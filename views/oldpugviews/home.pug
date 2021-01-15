@@ -1,0 +1,11 @@
+extends base
+
+block content
+
+    form(action='/searchResult', method='POST',name = "form") 
+        div.form-group.p-2
+            label.h5(for='searchword') Enter a Board Number to Search our Legacy Stock
+            small <br> Don't konw your exact part or revision number? <br> You can enter a partial number. EX: DS200LRPA or 
+            a.small(href="/serialSearch") Search by serial
+            input.form-control.my-3(type='text',name='searchWord',placeholder='Enter a search value')
+            button.btn.btn-danger.m-2(type='submit') Submit

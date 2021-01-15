@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <%- include('../partials/head'); %>
+    </head>
+    <body>
+        <div class="container">
+            <%- include('../partials/header'); %>
+            <%- include('../partials/links'); %>
+            <%- include('../partials/banner'); %> 
+            <%- include('../partials/message'); %>       
+            <div class="row mt-3">
+                <div class="col-sm">
+                    <!--Spacing--> 
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-left mb-4 h5">
+                        <ol class="list-unstyled">
+                            <% response.forEach(function(item){%>
+                                <li class="my-3">
+                                    <form action="POST">
+                                        <strong>Date of Request: </strong><%= item.daterequested %> </br>
+                                        <% if (item.stockedAS) { %>
+                                            <strong class="pr-2">Stocked AS: </strong> <%= item.stockedAS %><br>
+                                        <% } %>
+                                        <% if (item.description1) { %>
+                                            <strong class="pr-2">Description: </strong> <%= item.description1 %><br>
+                                        <% } %>
+                                        <% if (item.sapNumber) { %>
+                                            <strong class="pr-2">Sap Number: </strong> <%= item.sapNumber %><br>
+                                        <% } %>
+                                        <% if (item.quantity) { %>
+                                            <strong class="pr-2">Quantity: </strong> <%= item.quantity %><br>
+                                        <% } %>
+                                        <% if (item.requestor) { %>
+                                            <strong class="pr-2">Requested By: </strong> <%= item.requestor %><br>
+                                        <% } %>
+                                        <a class="btn btn-danger btn-sm mt-2 text-white" id="deletebutton" href="/deleterequest/<%=item._id%>/delete">Remove From List</a> 
+                                        <hr>
+                                        <a class="btn btn-secondary btn-block mt-4 text-white" href="/partadmin">Go Back</a>
+                                    </form>
+                                </li>
+                            <% }); %>
+                        </ol>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <!--Spacing--> 
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

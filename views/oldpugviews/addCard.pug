@@ -1,0 +1,11 @@
+extends base
+
+block content
+    form(action='/addCard', method='POST') 
+        div.form-group.p-2.text-center
+            label(for='searchword') Enter Information
+            input.form-control.my-3(type='text',name='partNumber',placeholder='Part Number')
+            input.form-control.my-3(type='text',name='serialNumber',placeholder='Enter serial number')
+            input.form-control.my-3(type='text',name='binNumber',placeholder='Enter bin number')
+            input.form-control.my-3(type='text',name='binLocation',placeholder='Enter Bin Location')
+            button.btn.btn-danger.m-2(type='submit') Add to Database
