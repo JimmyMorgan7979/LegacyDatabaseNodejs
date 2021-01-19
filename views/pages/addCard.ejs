@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <%- include('../partials/head'); %>
+    </head>
+    <body>
+        <div class="container">
+            <%- include('../partials/header'); %>
+            <%- include('../partials/links'); %>
+            <%- include('../partials/banner'); %> 
+            <%- include('../partials/message'); %>       
+            <div class="row mt-3">
+                <div class="col-sm">
+                    <!--Spacing--> 
+                </div>
+                <div class="col-sm-6">
+                    <form action="/addCard" method="POST">
+                        <div class="form-group p-2 text-center">
+                          <label for="searchword">Enter Information</label>
+                          <input class="form-control my-3" type="text" name="partNumber" placeholder="Part Number" />
+                          <input class="form-control my-3" type="text" name="serialNumber" placeholder="Enter serial number" />
+                          <input class="form-control my-3" type="text" name="binNumber" placeholder="Enter bin number" />
+                          <input class="form-control my-3" type="text" name="binLocation" placeholder="Enter Bin Location" />
+                          <button class="btn btn-danger m-2" type="submit">Add to Database</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm">
+                    <!--Spacing--> 
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

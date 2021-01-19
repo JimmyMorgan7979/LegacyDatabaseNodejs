@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <%- include('../partials/head'); %>
+    </head>
+    <body>
+        <div class="container">
+            <%- include('../partials/header'); %>
+            <%- include('../partials/links'); %>
+            <%- include('../partials/banner'); %> 
+            <%- include('../partials/message'); %>       
+            <div class="row mt-3">
+                <div class="col-sm">
+                    <!--Spacing--> 
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-center mb-4 h5">Requested Part
+                        <ol class="list-unstyled">
+                            <li class="my-3">
+                                <form action="/requestPart" method="POST">
+                                    <label for="searchword">Part Info</label></br>
+                                    <div class="form-group p-2 text-left">
+                                        <% if (requestStockedAS) { %>
+                                            <strong class="pr-2">Stocked As: </strong> <%= requestStockedAS %><br>
+                                        <% } %>
+                                        <% if (requestedDescription) { %>
+                                            <strong class="pr-2">Description: </strong> <%= requestedDescription %><br>
+                                        <% } %>
+                                        <% if (requestedSapNumber) { %>
+                                            <strong class="pr-2">SAP Number: </strong> <%= requestedSapNumber %><br>
+                                        <% } %>
+                                        <% if (requestedPrice) { %>
+                                            <strong class="pr-2">SAP Number: </strong> <%= requestedPrice %><br>
+                                        <% } %>
+                                        
+                                    </div>
+                                    <div class="form-group p-2 text-center">
+                                        <label for="searchword">Contact Info</label>
+                                        <input class="form-control my-3" type="text" name="name" placeholder="Name" />
+                                        <input class="form-control my-3" type="text" name="company" placeholder="Company Name" />
+                                        <input class="form-control my-3" type="text" name="email" placeholder="Email Address" />
+                                        <input class="form-control my-3" type="text" name="phone" placeholder="Phone Number" />
+                                        <textarea class="form-control my3" name='message' rows=5 placeholder='Enter Message'></textarea>
+                                        <input type="hidden" name="stockedAS" value="<%=requestStockedAS%>"/>
+                                        <input type="hidden" name="description1" value="<%=requestedDescription%>"/>
+                                        <input type="hidden" name="sapNumber" value="<%=requestedSapNumber%>"/>
+                                        <input type="hidden" name="price" value="<%=requestedPrice%>"/>
+                                        </br>
+                                        <button class="btn btn-danger m-2" type="submit">Submit Request </button>
+                                    </div>
+                                </form>
+                            </li>
+                        </ol>
+                </div>
+                </div>
+                <div class="col-sm">
+                    <!--Spacing--> 
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

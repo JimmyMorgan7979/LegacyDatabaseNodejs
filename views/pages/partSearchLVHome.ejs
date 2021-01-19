@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <%- include('../partials/head'); %>
+    </head>
+    <body>
+        <div class="container">
+            <%- include('../partials/header'); %>
+            <%- include('../partials/links'); %>
+            <%- include('../partials/banner'); %> 
+            <%- include('../partials/message'); %>       
+            <div class="row mt-3">
+                <div class="col-sm">
+                    <!--Spacing--> 
+                </div>
+                <div class="col-sm-6">
+                    <form action="/lvSearch" method="POST">
+                        <div class="form-group p-2">
+                            <label class="h5" for="searchword">Enter a Part Number to search our stock </label>
+                            <small><br> Don't know your exact part or revision number? <br> You can enter a partial number. EX: 104x123 or</small>
+                            <a class="small ml-1" href="/parts">Search by "Part" Number</a>
+                            <input class="form-control my-3" type="text" name="searchWord" placeholder="Enter a search value" />
+                            <button class="btn btn-danger m-2" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm">
+                    <!--Spacing--> 
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

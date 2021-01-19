@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <%- include('../partials/head'); %>
+    </head>
+    <body>
+        <div class="container">
+            <%- include('../partials/header'); %>
+            <%- include('../partials/links'); %>
+            <%- include('../partials/banner'); %> 
+            <%- include('../partials/message'); %>       
+            <div class="row mt-3">
+                <div class="col-sm">
+                    <!--Spacing--> 
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-center mb-4 h5">Search results for "<%=search.searchWord%>"
+                        <ol class="list-unstyled">
+                            <% response.forEach(function(item){%>
+                                <li class="my-3 text-left">
+                                    <form action='/getRequest' method="POST">
+                                        <strong>Stocked As: </strong><%= item.stockedAS %> </br>
+                                        <% if (item.description1) { %>
+                                            <strong class="pr-2">Description: </strong> <%= item.description1 %><br>
+                                        <% } %>
+                                        <% if (item.description2) { %>
+                                            <strong class="pr-2">Description 2: </strong> <%= item.description2 %><br>
+                                        <% } %>
+                                        <% if (item.manufacturer) { %>
+                                            <strong class="pr-2">Manufacturer: </strong> <%= item.manufacturer %><br>
+                                        <% } %>
+                                        <% if (item.sapNumber) { %>
+                                            <strong class="pr-2">SAP Number: </strong> <%= item.sapNumber %><br>
+                                        <% } %>
+                                        <% if (item.location1) { %>
+                                            <strong class="pr-2">Location 1: </strong> <%= item.location1 %><br>
+                                        <% } %>
+                                        <% if (item.location2) { %>
+                                            <strong class="pr-2">Location 2: </strong> <%= item.location2 %><br>
+                                        <% } %>
+                                        <% if (item.location3) { %>
+                                            <strong class="pr-2">Location 3: </strong> <%= item.location3 %><br>
+                                        <% } %>
+                                        <% if (item.drawer) { %>
+                                            <strong class="pr-2">Drawer: </strong> <%= item.drawer %><br>
+                                        <% } %>
+                                        <% if (item.cross1) { %>
+                                            <strong class="pr-2">Cross 1: </strong> <%= item.cross1 %><br>
+                                        <% } %>
+                                        <% if (item.cross2) { %>
+                                            <strong class="pr-2">Cross 2: </strong> <%= item.cross2 %><br>
+                                        <% } %>
+                                        <% if (item.cross3) { %>
+                                            <strong class="pr-2">Cross 3: </strong> <%= item.cross3 %><br>
+                                        <% } %>
+                                        <% if (item.price) { %>
+                                            <strong class="pr-2">List Price: </strong> <%= item.price %><br>
+                                        <% } %>
+                                        <input type='hidden', name='stockedAS', value='<%=item.stockedAS%>'>
+                                        <input type='hidden', name='description1', value='<%=item.description1%>'>
+                                        <input type='hidden', name='sapNumber', value='<%=item.sapNumber%>'>
+                                        <input type='hidden', name='price', value='<%=item.price%>'>
+                                        <button class= "btn btn-danger mt-2" type='submit'>Request Quote</button>
+                                        </form>
+                                        <form action='/restockPart' method="POST">
+                                        <input type='hidden', name='stockedAS', value='<%=item.stockedAS%>'>
+                                        <input type='hidden', name='description1', value='<%=item.description1%>'>
+                                        <input type='hidden', name='sapNumber', value='<%=item.sapNumber%>'>
+                                        <button class= "btn btn-secondary mt-2" type='submit'>Restock Order</button>
+                                        </form>
+                                </li>
+                            <% }); %>
+                        </ol>
+                    </div>
+                    <a class="btn btn-primary btn-block mt-4 text-white" href="/requestNewPart">Request Part not on list</a> 
+                    <a class="btn btn-secondary btn-block mt-4 text-white" href="/parts">Go Back</a>
+                </div>
+                <div class="col-sm">
+                    <!--Spacing--> 
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
