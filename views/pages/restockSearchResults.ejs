@@ -35,12 +35,13 @@
                                         <% if (item.requestor) { %>
                                             <strong class="pr-2">Requested By: </strong> <%= item.requestor %><br>
                                         <% } %>
-                                        <a class="btn btn-danger btn-sm mt-2 text-white" id="deletebutton" href="/deleterestock/<%=item._id%>/delete">Remove From List</a> 
+
+                                        <a class="btn btn-danger btn-sm mt-2 text-white" id="deletebutton" href="/deleterequest/<%=item._id%>/delete">Remove From List</a> 
                                         <hr>
+                                        <a class="btn btn-secondary btn-block mt-4 text-white" href="/partadmin">Go Back</a>
                                     </form>
                                 </li>
                             <% }); %>
-                            <a class="btn btn-secondary btn-block mt-4 text-white" href="/partadmin">Go Back</a>
                         </ol>
                     </div>
                 </div>
