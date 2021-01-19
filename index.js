@@ -126,7 +126,6 @@ app.post('/searchresult', function(req,res){
     Card.find({partNumber: {$regex: search.searchWord, $options: 'i'}},
         function(err,response){
             res.render('pages/searchResult', {banner: 'Search Results', search,response, message:''});
-            console.log(response)
         }).limit(20);
 });
 //THIS SECTION IS FOR "SEARCH BY SERIAL NUMBER"
@@ -256,7 +255,7 @@ app.post('/addPart', function(req,res){
 // Routes to edit parts
 app.post('/updatePart', function(req,res){
     var search = req.body;
-        Part.find({stockedAS: {$eq: search.searchWord}},
+        Part.find({'stockedAS': {'$regex': search.searchWord,$options:'i'}},
         function(err,response){
             res.render('pages/editPart', {banner: 'Search Results to Update Parts Record', search,response, message:''});
         }).limit(1);
@@ -264,7 +263,7 @@ app.post('/updatePart', function(req,res){
 
  app.post('/updateLVPart', function(req,res){
     var search = req.body;
-        Part.find({sapNumber: {$eq: search.searchWord}},
+        Part.find({'sapNumber': {'$regex': search.searchWord,$options:'i:}'}},
         function(err,response){
             res.render('pages/editPart', {banner: 'Search Results to Update Parts Record', search,response, message:''});
         }).limit(1);
