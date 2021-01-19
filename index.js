@@ -137,7 +137,7 @@ app.post('/serialSearch', function(req,res){
     var search = req.body;
      Card.find({serialNumber: {$regex: search.searchWord, $options: 'i'}},
          function(err,response){
-             res.render('serialSearchResult', {banner: 'Search Results', search,response, message:''});
+             res.render('pages/serialSearchResult', {banner: 'Search Results', search,response, message:''});
          }).limit(20);
  });
 
@@ -208,7 +208,7 @@ app.post('/partSearchResult', function(req,res){
     var search = req.body;
     Part.find({stockedAS: {$regex: search.searchWord, $options: 'i'}},
         function(err,response){
-            res.render('partSearchResult', {banner: 'Search Results', search,response, message:''});
+            res.render('pages/partSearchResult', {banner: 'Search Results', search,response, message:''});
         }).limit(20);
 });
 
@@ -220,7 +220,7 @@ app.post('/lvSearch', function(req,res){
     var search = req.body;
     Part.find({sapNumber: {$regex: search.searchWord, $options: 'i'}},
         function(err,response){
-            res.render('partSearchResult', {banner: 'Search Results', search,response, message:''});
+            res.render('pages/partSearchResult', {banner: 'Search Results', search,response, message:''});
         }).limit(20);
 });
 
@@ -258,7 +258,7 @@ app.post('/updatePart', function(req,res){
     var search = req.body;
         Part.find({stockedAS: {$eq: search.searchWord}},
         function(err,response){
-            res.render('editPart', {banner: 'Search Results to Update Parts Record', search,response, message:''});
+            res.render('pages/editPart', {banner: 'Search Results to Update Parts Record', search,response, message:''});
         }).limit(1);
  });
 
@@ -266,7 +266,7 @@ app.post('/updatePart', function(req,res){
     var search = req.body;
         Part.find({sapNumber: {$eq: search.searchWord}},
         function(err,response){
-            res.render('editPart', {banner: 'Search Results to Update Parts Record', search,response, message:''});
+            res.render('pages/editPart', {banner: 'Search Results to Update Parts Record', search,response, message:''});
         }).limit(1);
  });
 
@@ -350,17 +350,17 @@ app.post('/requestNewPart', function(req,res){
         if(err)
             res.send("error");
         else
-            res.render('sentRequest', {banner: 'New Parts Quote Request', message: 'Request Sent'});
+            res.render('pages/sentRequest', {banner: 'New Parts Quote Request', message: 'Request Sent'});
     });
 });
 
 //Route to send Email to request quote for parts
 app.post ('/getRequest', function(req,res){
-    var item1=req.body.stockedAS
-    var item2=req.body.description1
-    var item3=req.body.sapNumber
-    var item4=req.body.price
-    res.render('requestPart', {banner: 'Parts Quote Request', message:'', item1, item2, item3, item4})
+    var requestStockedAS=req.body.stockedAS
+    var requestedDescription=req.body.description1
+    var requestedSapNumber=req.body.sapNumber
+    var requestedPrice=req.body.price
+    res.render('pages/requestPart', {banner: 'Parts Quote Request', message:'', requestStockedAS, requestedDescription, requestedSapNumber, requestedPrice})
     
 })
 app.post('/requestPart', function(req,res){
@@ -383,7 +383,7 @@ app.post('/requestPart', function(req,res){
         if(err)
             res.send("error");
         else
-            res.render('sentRequest', {banner: 'Parts Quote Request', message: 'Request Sent'});
+            res.render('pages/sentRequest', {banner: 'Parts Quote Request', message: 'Request Sent'});
     });
   });
 
@@ -391,9 +391,19 @@ app.post('/requestPart', function(req,res){
 app.get('/requestedquotes',function(req,res){
     RequestQuote.find(
         function(err,response){
-            res.render('requestSearchResults', {banner: 'Requests',message:'',response});
+            res.render('pages/requestSearchResults', {banner: 'Requests',message:'',response});
         });
 });
+
+//route to delete part requests from the table
+app.get('/deleterequest/:id/delete',function(req,res){
+    RequestQuote.deleteOne({_id: req.params.id},
+        function(err){
+            if(err) res.json(err);
+            else
+                res.redirect('/requestedquotes')
+        });
+    });
 
 //Route to Admin page to search by Stocked As part number
 app.get ('/partAdmin', function(req,res){
@@ -423,23 +433,23 @@ app.get('/restock',function(req,res){
     });
 });
 
-    //route to delete restock requests from the table
-    app.get('/deleterequest/:id/delete',function(req,res){
-        RestockPart.deleteOne({_id: req.params.id},
-            function(err){
-                if(err) res.json(err);
-                else
-                    res.redirect('/partAdmin')
-            });
-        });
-    
-    
+//route to delete part requests/restock from the table
+app.get('/deleterestock/:id/delete',function(req,res){
+    RestockPart.deleteOne({_id: req.params.id},
+        function(err){
+            if(err) res.json(err);
+            else
+                res.redirect('/restock')
 
+        });
+    });
+    
+    
 app.post('/restockPart', function(req,res){
     var restockAS = req.body.stockedAS
     var restockdescription1 = req.body.description1
     var restocksapNumber = req.body.sapNumber
-    res.render('restockPart', {banner: 'Restock Order',message:'',restockAS,restockdescription1,restocksapNumber});
+    res.render('pages/restockPart', {banner: 'Restock Order',message:'',restockAS,restockdescription1,restocksapNumber});
 })
 app.post('/restockOrder', function(req,res){
     var today = new Date();
@@ -457,7 +467,7 @@ app.post('/restockOrder', function(req,res){
         if(err)
             res.send("error");
         else
-            res.render('home', {banner: 'Restock Order', message: 'Part Ordered'});
+            res.render('pages/partSearchhome', {banner: 'Restock Order', message: 'Part Ordered'});
     }) ;
 });
 

@@ -1,0 +1,59 @@
+extends base
+
+block content
+    div.text-center.mb-4.h5 Search results for "#{search.searchWord}"
+    ol.list-unstyled
+        each item in response
+            li.my-3
+                form(action='/getRequest', method="POST") 
+                    strong.pr-2 Stocked As: 
+                    |#{item.stockedAS}</br>
+                    if item.description1
+                        strong.pr-2 Description: 
+                        |#{item.description1}</br>
+                    if item.description2
+                        strong.pr-2 Description 2: 
+                        |#{item.description2}</br>
+                    if item.manufacturer
+                        strong.pr-2 Manufacturer: 
+                        |#{item.manufacturer}</br>
+                    if item.sapNumber
+                        strong.pr-2 SAP Number: 
+                        |#{item.sapNumber}</br>
+                    if item.location1
+                        strong.pr-2 Location 1: 
+                        |#{item.location1}</br>
+                    if item.location2
+                        strong.pr-2 Location 2: 
+                        |#{item.location2}</br>
+                    if item.location3
+                        strong.pr-2 Location 3: 
+                        |#{item.location3}</br>
+                    if item.drawer
+                        strong.pr-2 Drawer: 
+                        |#{item.drawer}</br>
+                    if item.cross1
+                        strong.pr-2 Cross 1: 
+                        |#{item.cross1}</br>
+                    if item.cross2
+                        strong.pr-2 Cross 2: 
+                        |#{item.cross2}</br>
+                    if item.cross3
+                        strong.pr-2 Cross 3: 
+                        |#{item.cross3}</br>
+                    if item.price
+                        strong.pr-2 List Price: 
+                        |#{item.price}</br>
+                    input(type='hidden', name='stockedAS', value=`${item.stockedAS}`)
+                    input(type='hidden', name='description1', value=`${item.description1}`)
+                    input(type='hidden', name='sapNumber', value=`${item.sapNumber}`)
+                    input(type='hidden', name='price', value=`${item.price}`)                    
+                    button.btn.btn-danger.mt-2(type='submit') Request Quote
+                form(action='/restockPart', method="POST")
+                    input(type='hidden', name='stockedAS', value=`${item.stockedAS}`)
+                    input(type='hidden', name='description1', value=`${item.description1}`)
+                    input(type='hidden', name='sapNumber', value=`${item.sapNumber}`)
+                    button.btn.btn-secondary.mt-2(type='submit') Restock Order
+                    <hr>
+    a.btn.btn-primary.btn-block.mt-4(href='/requestNewPart') Request Part not on list
+    a.btn.btn-secondary.btn-block.mt-4(href='/parts') Go Back
