@@ -440,11 +440,11 @@ app.get('/deleterestock/:id/delete',function(req,res){
             if(err) res.json(err);
             else
                 res.redirect('/restock')
+
         });
     });
     
     
-
 app.post('/restockPart', function(req,res){
     var restockAS = req.body.stockedAS
     var restockdescription1 = req.body.description1
