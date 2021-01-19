@@ -1,0 +1,9 @@
+
+extends base
+
+block content
+    form(action='/requestSearch', method='POST') 
+        div.form-group.p-2
+            label.h5(for='searchword') Enter a Date for Quotes
+            small <br> You can enter a date. EX: 11-20-2020 or Leave blank for All
+            input.form-control.my-3(type='text',name='searchWord',placeholder='Enter a date  Format: XX-XX-XXXX')
