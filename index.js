@@ -2,7 +2,6 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 
-
 // the following allows you to serve static files
 app.use('/static', express.static('public'))
 
@@ -526,9 +525,9 @@ app.get('/createquote',function(req,res){
 })
 
 //BEGINS THE SECTION FOR PRINTING LABELS
-app.get ('/printlabel', function(req,res){
-    res.render('pages/printlabel', {banner: 'Print Label', message: ''})
-})
+//app.get ('/printlabel', function(req,res){
+//    res.render('pages/printlabel', {banner: 'Print Label', message: ''})
+//})
 
 
  
