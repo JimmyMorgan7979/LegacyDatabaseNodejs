@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 
+
 // the following allows you to serve static files
 app.use('/static', express.static('public'))
 
@@ -86,7 +87,8 @@ var requestQuoteSchema = mongoose.Schema({
     email: String,
     phone: String,
     message: String,
-    dateRequest: String
+    dateRequest: String,
+    quantity: String
 });
 var RequestQuote = mongoose.model("RequestQuote",requestQuoteSchema);
 
@@ -408,7 +410,8 @@ app.post('/requestPart', function(req,res){
         email: requestInfo.email,
         phone: requestInfo.phone,
         message: requestInfo.message,
-        dateRequest: date
+        dateRequest: date,
+        quantity: requestInfo.quantity
     });
     newRequest.save(function(err,RequestQuote){
         if(err)
@@ -456,6 +459,12 @@ app.get ('/partAdmin', function(req,res){
 app.get ('/partAdminLV', function(req,res){
     res.render('pages/partAdminLV', {banner: 'Admin',message:''})
 })
+
+//ROUTE TO PRINT LABELS FROM ADMIN PAGE
+app.post('/printlabel', function(req,res){
+    var printinfo = req.body;
+    res.render('pages/printlabel', {banner: '', message:'', printinfo})
+});
 
 //Begins the section to delete quote requests from the table
 app.get('/delete/:id/delete',function(req,res){
@@ -511,9 +520,19 @@ app.post('/restockOrder', function(req,res){
             res.render('pages/partSearchhome', {banner: 'Restock Order', message: 'Part Ordered'});
     }) ;
 });
+//BEGINS THE SECTION FOR CREATING QUOTES TO SEND TO THE CUSTOMER
+app.get('/createquote',function(req,res){
+    res.render('pages/createquote', {banner:"Create Quote", message:''});
+})
+
+//BEGINS THE SECTION FOR PRINTING LABELS
+app.get ('/printlabel', function(req,res){
+    res.render('pages/printlabel', {banner: 'Print Label', message: ''})
+})
 
 
  
 //Port that the app sends to
 //app.listen(3000);
-app.listen(process.env.PORT || 5000)
+app.listen(process.env.PORT || 5000);
+//console.log("Running on port 5000")
