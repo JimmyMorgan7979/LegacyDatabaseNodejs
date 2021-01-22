@@ -35,6 +35,9 @@
                                         <% if (item.stockedAS) { %>
                                             <strong class="pr-2">Stocked AS: </strong> <%= item.stockedAS %><br>
                                         <% } %>
+                                        <% if (item.quantity) { %>
+                                            <strong class="pr-2">Quantity: </strong> <%= item.quantity %><br>
+                                        <% } %>
                                         <% if (item.description1) { %>
                                             <strong class="pr-2">Description: </strong> <%= item.description1 %><br>
                                         <% } %>

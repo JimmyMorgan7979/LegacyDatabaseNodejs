@@ -20,23 +20,33 @@
                                 <li class="my-3 text-left">
                                     <form action="/editPart/<%=item._id%>" method="POST">
                                         <div class="form-group p-2 text-center">
-                                        <label for="searchword">Enter Information</label>
-                                        <input class="form-control my-3" type="text" name="stockedAS" placeholder="Part Number" value='<%=item.stockedAS%>' />
-                                        <input class="form-control my-3" type="text" name="description1" placeholder="Description of Part" value='<%=item.description1%>'/>
-                                        <input class="form-control my-3" type="text" name="description2" placeholder="Additional Description" value='<%=item.description2%>'/>
-                                        <input class="form-control my-3" type="text" name="sapNumber" placeholder="SAP Number" value='<%=item.sapNumber%>'>
-                                        <input class="form-control my-3" type="text" name="manufacturer" placeholder="Manufacturer" value='<%=item.manufacturer%>'/>
-                                        <input class="form-control my-3" type="text" name="location1" placeholder="Location 1" value='<%=item.location1%>'/>
-                                        <input class="form-control my-3" type="text" name="location2" placeholder="Location 2" value='<%=item.location2%>'/>
-                                        <input class="form-control my-3" type="text" name="location3" placeholder="Location 3" value='<%=item.location3%>'/>
-                                        <input class="form-control my-3" type="text" name="drawer" placeholder="Drawer" value='<%=item.drawer%>'/>
-                                        <input class="form-control my-3" type="text" name="cross1" placeholder="Cross 1" value='<%=item.cross1%>'/>
-                                        <input class="form-control my-3" type="text" name="cross2" placeholder="Cross 2" value='<%=item.cross2%>'/>
-                                        <input class="form-control my-3" type="text" name="cross3" placeholder="Cross 3" value='<%=item.cross3%>'/>
-                                        <input class="form-control my-3" type="text" name="price" placeholder="List Price" value='<%=item.price%>'/>
-                                        <button class="btn btn-primary m-2" type="submit">Submit Changes</button>
-                                        <a class="btn btn-danger m-2" id="deletebutton" href="/delpart/<%=item._id%>/delete">Delete Part</a>
-                                        <a class="btn btn-secondary m-2" href="/partAdmin">Go Back to Admin Page</a>
+                                            <label for="searchword">Enter Information</label>
+                                            <input class="form-control my-3" type="text" name="stockedAS" placeholder="Part Number" value='<%=item.stockedAS%>' />
+                                            <input class="form-control my-3" type="text" name="description1" placeholder="Description of Part" value='<%=item.description1%>'/>
+                                            <input class="form-control my-3" type="text" name="description2" placeholder="Additional Description" value='<%=item.description2%>'/>
+                                            <input class="form-control my-3" type="text" name="sapNumber" placeholder="SAP Number" value='<%=item.sapNumber%>'>
+                                            <input class="form-control my-3" type="text" name="manufacturer" placeholder="Manufacturer" value='<%=item.manufacturer%>'/>
+                                            <input class="form-control my-3" type="text" name="location1" placeholder="Location 1" value='<%=item.location1%>'/>
+                                            <input class="form-control my-3" type="text" name="location2" placeholder="Location 2" value='<%=item.location2%>'/>
+                                            <input class="form-control my-3" type="text" name="location3" placeholder="Location 3" value='<%=item.location3%>'/>
+                                            <input class="form-control my-3" type="text" name="drawer" placeholder="Drawer" value='<%=item.drawer%>'/>
+                                            <input class="form-control my-3" type="text" name="cross1" placeholder="Cross 1" value='<%=item.cross1%>'/>
+                                            <input class="form-control my-3" type="text" name="cross2" placeholder="Cross 2" value='<%=item.cross2%>'/>
+                                            <input class="form-control my-3" type="text" name="cross3" placeholder="Cross 3" value='<%=item.cross3%>'/>
+                                            <input class="form-control my-3" type="text" name="price" placeholder="List Price" value='<%=item.price%>'/>
+                                            <button class="btn btn-primary m-2" type="submit">Submit Changes</button>
+                                            <a class="btn btn-danger m-2" id="deletebutton" href="/delpart/<%=item._id%>/delete">Delete Part</a>
+                                            <a class="btn btn-secondary m-2" href="/partAdmin">Go Back to Admin Page</a>
+                                        </div>
+                                    </form>
+                                    <form action="/printlabel" method="POST">
+                                        <div class="form-group text-center">
+                                            <input class="form-control my-3" type="hidden" name="sapNumber" placeholder="SAP Number" value='<%=item.sapNumber%>'>
+                                            <input class="form-control my-3" type="hidden" name="stockedAS" placeholder="Part Number" value='<%=item.stockedAS%>' />
+                                            <input class="form-control my-3" type="hidden" name="location1" placeholder="Location 1" value='<%=item.location1%>'/>
+                                            <input class="form-control my-3" type="hidden" name="location2" placeholder="Location 2" value='<%=item.location2%>'/>
+                                            <input class="form-control my-3" type="hidden" name="description1" placeholder="Description of Part" value='<%=item.description1%>'/>
+                                            <button class="btn btn-primary m-2" type="submit">Print label</button>
                                         </div>
                                     </form>
                                 </li>
