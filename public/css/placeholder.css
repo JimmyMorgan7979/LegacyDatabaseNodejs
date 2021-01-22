@@ -1,0 +1,29 @@
+.form-control::-webkit-input-placeholder{
+    color:#c70b0b;
+    opacity:1;
+    font-style:italic;
+}
+
+.form-control::-moz-placeholder{
+    color:#c70b0b;
+    opacity:1;
+    font-style:italic;
+}
+
+.form-control::-ms-input-placeholder{
+    color:#c70b0b;
+    opacity:1;
+    font-style:italic;
+}
+
+.form-control::-ms-input-placeholder{
+    color:#c70b0b;
+    opacity:1;
+    font-style:italic;
+}
+
+.form-control::placeholder{
+    color:#c70b0b;
+    opacity:1;
+    font-style:italic;
+}

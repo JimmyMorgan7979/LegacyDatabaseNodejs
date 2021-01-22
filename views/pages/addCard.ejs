@@ -2,6 +2,7 @@
 <html lang='en'>
     <head>
         <%- include('../partials/head'); %>
+        <link rel='stylesheet' href='static/css/placeholder.css'>
     </head>
     <body>
         <div class="container">
@@ -16,12 +17,15 @@
                 <div class="col-sm-6">
                     <form action="/addCard" method="POST">
                         <div class="form-group p-2 text-center">
-                          <label for="searchword">Enter Information</label>
-                          <input class="form-control my-3" type="text" name="partNumber" placeholder="Part Number" />
-                          <input class="form-control my-3" type="text" name="serialNumber" placeholder="Enter serial number" />
-                          <input class="form-control my-3" type="text" name="binNumber" placeholder="Enter bin number" />
-                          <input class="form-control my-3" type="text" name="binLocation" placeholder="Enter Bin Location" />
-                          <button class="btn btn-danger m-2" type="submit">Add to Database</button>
+                            <label for="searchword">Enter Information</label>
+                            <input class="form-control my-3" type="text" name="partNumber" placeholder="Part Number" />
+                            <input class="form-control my-3" type="text" name="serialNumber" placeholder="Serial Number" />
+                            <input class="form-control my-3" type="text" name="binNumber" placeholder="Bin Number" />
+                            <input class="form-control my-3" type="text" name="binLocation" placeholder="Bin Location" />
+                            <button class="btn btn-danger m-2" type="submit">Add to Database</button>
+                        </div>
+                        <div class="form-group p-2 text-center">
+                            <a class="btn btn-secondary m-2" href="/cardAdmin">Go Back</a>   
                         </div>
                     </form>
                 </div>

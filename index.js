@@ -13,6 +13,9 @@ mongoose.connect(mongoDB,{useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console,'MongoDB connection error:'));
 
+//DeprecationWarning disable
+mongoose.set('useFindAndModify', false)
+
 //to parse url encoded data
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -136,7 +139,7 @@ app.post('/serialSearch', function(req,res){
     var search = req.body;
      Card.find({serialNumber: {$regex: search.searchWord, $options: 'i'}},
          function(err,response){
-             res.render('pages/serialSearchResult', {banner: 'Search Results', search,response, message:''});
+             res.render('pages/searchResult', {banner: 'Search Results', search,response, message:''});
          }).limit(20);
  });
 
@@ -164,7 +167,7 @@ app.get('/del/:id/delete',function(req,res){
         function(err){
             if(err) res.json(err);
             else
-                res.redirect('/')
+                res.redirect('/cardAdmin')
         });
 });
 
@@ -187,7 +190,7 @@ app.post('/addCard', function(req,res){
         if(err)
             res.send("error");
         else
-            res.render('pages/home', {banner: 'Legacy', message: 'Added Record to DB'});
+            res.render('pages/cardAdmin', {banner: 'Legacy', message: 'Added Record to DB'});
     }) ;
 });
 // Edit function for legacy database
@@ -269,6 +272,23 @@ app.post('/updatePart', function(req,res){
         }).limit(1);
  });
 
+ // Routes to edit cards
+app.post('/updateCard', function(req,res){
+    var search = req.body;
+        Card.find({'partNumber': {'$regex': search.searchWord,$options:'i'}},
+        function(err,response){
+            res.render('pages/editCard', {banner: 'Search Results to Update Legacy Record', search,response, message:''});
+        }).limit(1);
+ });
+
+ app.post('/updateSNCard', function(req,res){
+    var search = req.body;
+        Card.find({'serialNumber': {'$regex': search.searchWord,$options:'i:}'}},
+        function(err,response){
+            res.render('pages/editCard', {banner: 'Search Results to Update Legacy Record', search,response, message:''});
+        }).limit(1);
+ });
+
 // Edit function for parts database
 app.post('/editpart/:id', function(req,res){
     var updatepart = {_id: req.params.id}
@@ -284,9 +304,21 @@ app.post('/editpart/:id', function(req,res){
     })
 })
 
-
+// Edit function for legacy database
+app.post('/editcard/:id', function(req,res){
+    var updatepart = {_id: req.params.id}
+    var addedit = req.body
+    Card.findOneAndUpdate(updatepart, addedit,
+        function (err, docs) { 
+            if (err){ 
+                console.log(err) 
+            } 
+            else{ 
+                res.redirect('/cardAdmin') 
+            } 
+    })
+})
         
-
 //Route for parts to be deleted and inserted into the parts delete table
 app.get('/delpart/:id/delete',function(req,res){
     test = Part.find({_id: req.params.id},
@@ -404,7 +436,17 @@ app.get('/deleterequest/:id/delete',function(req,res){
         });
     });
 
-//Route to Admin page to search by Stocked As part number
+//Route to Admin page for Legacy to search by board number
+app.get ('/cardAdmin', function(req,res){
+    res.render('pages/cardAdmin', {banner: 'Admin',message:''})
+})
+
+//Route to Admin page for Legacy to search by serial number
+app.get ('/cardAdminSN', function(req,res){
+    res.render('pages/cardAdminSN', {banner: 'Admin',message:''})
+})
+
+//Route to Admin page for parts to search by Stocked As part number
 app.get ('/partAdmin', function(req,res){
     res.render('pages/partAdmin', {banner: 'Admin',message:''})
 })

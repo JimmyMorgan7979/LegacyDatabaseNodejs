@@ -2,6 +2,7 @@
 <html lang='en'>
     <head>
         <%- include('../partials/head'); %>
+        <link rel='stylesheet' href='static/css/placeholder.css'>
     </head>
     <body>
         <div class="container">
@@ -14,16 +15,26 @@
                     <!--Spacing--> 
                 </div>
                 <div class="col-sm-6">
-                    <form action="#" method="POST">
-                        <div class="form-group p-2 text-center">
-                          <label for="searchword">Edit Information</label>
-                          <input class="form-control my-3" type="text" name="partNumber" placeholder="Part Number" />
-                          <input class="form-control my-3" type="text" name="serialNumber" placeholder="Enter serial number" />
-                          <input class="form-control my-3" type="text" name="binNumber" placeholder="Enter bin number" />
-                          <input class="form-control my-3" type="text" name="binLocation" placeholder="Enter Bin Location" />
-                          <button class="btn btn-danger m-2" type="submit">Submit Changes</button>
-                        </div>
-                    </form>
+                    <div class="text-center mb-4 h5">Search results for "<%=search.searchWord%>"
+                        <ol class="list-unstyled">
+                            <% response.forEach(function(item){%>
+                                <li class="my-3 text-left">
+                                    <form action="/editCard/<%=item._id%>" method="POST">
+                                        <div class="form-group p-2 text-center">
+                                            <label for="searchword">Edit Information</label>
+                                            <input class="form-control my-3" type="text" name="partNumber" placeholder="Part Number" value='<%=item.partNumber%>'/>
+                                            <input class="form-control my-3" type="text" name="serialNumber" placeholder="Enter serial number" value='<%=item.serialNumber%>'/>
+                                            <input class="form-control my-3" type="text" name="binNumber" placeholder="Enter bin number" value='<%=item.binNumber%>'/>
+                                            <input class="form-control my-3" type="text" name="binLocation" placeholder="Enter Bin Location" value='<%=item.binLocation%>'/>
+                                            <button class="btn btn-primary m-2" type="submit">Save Changes</button>
+                                            <a class="btn btn-danger m-2" id="deletebutton" href="/del/<%=item._id%>/delete">Delete Board</a>
+                                        </div>
+                                    </form>
+                                </li>
+                            <% }); %>
+                        </ol>
+                        <a class="btn btn-secondary m-2" href="/cardAdmin">Go Back to Admin Page</a>
+                    </div>
                 </div>
                 <div class="col-sm">
                     <!--Spacing--> 

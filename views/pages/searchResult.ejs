@@ -15,7 +15,6 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="text-center mb-4 h5">Search results for "<%= search.searchWord %>"
-
                         <ol class="list-unstyled">
                             <% response.forEach(function(item){%>
                                 <li class="my-3 text-left">
@@ -39,11 +38,11 @@
                                         <% if (item.dateReceived) { %>
                                             <strong class="pr-2">Date Received: </strong> <%= item.dateReceived %><br>
                                         <% } %>
-                                        <a class="btn btn-danger btn-sm mt-2 text-white" id="deletebutton" href="/del/<%=item._id%>/delete">Remove From Legacy</a>
                                     </form>  
                                 </li>
                             <% }); %>
                         </ol>
+                        <a class="btn btn-secondary mt-4" href="/">Go Back to Search Page</a>
                     </div>
                 </div>
                 <div class="col-sm">
