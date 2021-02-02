@@ -6,3 +6,10 @@
     font-family: barcodefont;   
     font-size:35px;
 }
+@font-face{
+    font-family:abb;
+    src: url('../fonts/ABBvoice_Rg.ttf');
+}
+.abb {
+    font-family:abb;
+}
