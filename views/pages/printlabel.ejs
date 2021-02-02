@@ -3,26 +3,25 @@
         <%- include('../partials/head'); %>
         <style>
             table,th,td,tr {
-                border: 1px solid black;
                 border-collapse:collapse;
             }
             body{
-                padding-top:20px;
+                padding-top:15px;                
             }
             td{
                 font-size:15px;
             }
             th{
-                font-size:15px;
+                font-size:17px;
             }
         </style>
     </head>
-    <body class="abb">
-        <table style="width:300px; height:150px;">
+    <body>
+        <table style="width:270px; height:130px; ">
             <tr>
-                <td style="text-align:left">LV</td>
+                <td style="text-align:left"><small>LV</small></td>
                 <td></td>
-                <td><%= new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit'}).format(new Date()) %></td>
+                <td><small><%= new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit'}).format(new Date()) %></small></td>
             </tr>
 
             <tr>
@@ -30,7 +29,7 @@
                 <th style="text-align:center;"><%=printinfo.sapNumber%></th>
             </tr>
                 <td></td>
-                <td style="text-align:center;" class="bcode"><%=printinfo.sapNumber%></td>
+                <td style="text-align:center;" class="bcode">*<%=printinfo.sapNumber%>*</td>
             <tr>
                 <td></td>
                 <th style="text-align:center;"><%=printinfo.stockedAS%></th>
