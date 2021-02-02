@@ -1,9 +1,15 @@
-body {visibility:hidden;}
-.print{visibility:visible}
 @font-face {
     font-family: barcodefont;
     src: url('../fonts/39.ttf');
 }
 .bcode {
     font-family: barcodefont;   
+    font-size:40px;
+}
+@font-face{
+    font-family:abb;
+    src: url('../fonts/ABBvoice_Rg.ttf');
+}
+.abb {
+    font-family:abb;
 }

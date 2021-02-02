@@ -1,55 +1,52 @@
 <html lang='en'>
     <head>
         <%- include('../partials/head'); %>
-        <link rel='stylesheet' href='static/css/print.css'>
+        <style>
+            table,th,td,tr {
+                border: 1px solid black;
+                border-collapse:collapse;
+            }
+            body{
+                padding-top:20px;
+            }
+            td{
+                font-size:15px;
+            }
+            th{
+                font-size:15px;
+            }
+        </style>
     </head>
-    <body>
-        <div class="container p-0 m-0">     
-            <div class="row border mt-1">
-                <div class="col-sm">
-                    <div class="row  print">
-                        <div class="col-sm-1 text-left  print">
-                            LV
-                        </div>
-                        <div class="col-sm-6  print">
-                            <!--space-->
-                        </div>
-                        <div class="col-sm-3 text-right  print">
-                            <%= new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit'}).format(new Date()) %>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 h3 text-center print ">
-                        <strong><%=printinfo.sapNumber%></strong>
-                    </div>
-                    <div class="col-sm-12 text-center print">
-                        <div class="bcode mt-1 h1 ">*<%=printinfo.sapNumber%>*</div>
-                    </div>
-                    <div class="col-sm-12 text-center print">
-                        <strong><%=printinfo.stockedAS%></strong>
-                    </div>
-                    <div class="col-sm-12  text-center print">
-                        <small><%=printinfo.description1%></small>
-                    </div>
-                    <div class="row text-left  print">
-                        <div class="col-sm-5  print">
-                            Loc: <%=printinfo.location1%>
-                        </div>
-                        <div class="col-sm-2  print">
-                            <!--space-->
-                        </div>
-                        <div class="col-sm-5 text-left  print">
-                            Loc: <%=printinfo.location2%>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6  justify-content-start print" id="printableArea">
-                    <!--spacing-->
-                </div>
-                <div class="col-sm">
-                    <!--Spacing--> 
-                </div>
-            </div>
-        </div>
-    </body>
+    <body class="abb">
+        <table style="width:300px; height:150px;">
+            <tr>
+                <td style="text-align:left">LV</td>
+                <td></td>
+                <td><%= new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit'}).format(new Date()) %></td>
+            </tr>
 
+            <tr>
+                <td></td>
+                <th style="text-align:center;"><%=printinfo.sapNumber%></th>
+            </tr>
+                <td></td>
+                <td style="text-align:center;" class="bcode"><%=printinfo.sapNumber%></td>
+            <tr>
+                <td></td>
+                <th style="text-align:center;"><%=printinfo.stockedAS%></th>
+            </tr>
+
+            <tr>
+                <td></td>
+                <td style="text-align:center;"><small><%=printinfo.description1%></small></td>
+            </tr>
+
+            <tr>
+                <td style="text-align:left;"><small>Loc: <%=printinfo.location1%></small></td>
+                <td></td>
+                <td><small>Drawer: <%=printinfo.drawer%></small></td>
+            </tr>
+
+        </table>
+    </body>
 </html>
