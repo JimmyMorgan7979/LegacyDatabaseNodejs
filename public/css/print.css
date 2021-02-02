@@ -1,9 +1,8 @@
-body {visibility:hidden;}
-.print{visibility:visible}
 @font-face {
     font-family: barcodefont;
     src: url('../fonts/39.ttf');
 }
 .bcode {
     font-family: barcodefont;   
+    font-size:35px;
 }

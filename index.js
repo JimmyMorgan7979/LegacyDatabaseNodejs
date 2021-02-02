@@ -525,9 +525,9 @@ app.get('/createquote',function(req,res){
 })
 
 //BEGINS THE SECTION FOR PRINTING LABELS
-//app.get ('/printlabel', function(req,res){
-//    res.render('pages/printlabel', {banner: 'Print Label', message: ''})
-//})
+app.get ('/printlabel', function(req,res){
+    res.render('pages/printlabel', {banner: 'Print Label', message: ''})
+})
 
 
  
