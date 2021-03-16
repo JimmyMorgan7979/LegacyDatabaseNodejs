@@ -1,13 +1,19 @@
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
+var express = require('express')
+var app = express()
+const passport = require('passport')
+const flash = require('connect-flash')
+const session = require('express-session')
+const path = require('path')
+const bcrypt = require('bcryptjs')
+const { forwardAuthenticated, ensurePartAuthenticated, forwardPartAuthenticated, ensureCardAuthenticated, forwardCardAuthenticated } = require('./config/auth')
+const LocalStrategy = require('passport-local').Strategy
 
 // the following allows you to serve static files
-app.use('/static', express.static('public'))
+app.use('/static', express.static(path.join(__dirname, 'public')))
 
 //Mongodb connection new 10-22-20
 var mongoose = require('mongoose');
-var mongoDB='mongodb://localhost:27017/Inventory';
+var mongoDB ='mongodb://localhost:27017/Inventory';
 //var mongoDB = 'mongodb+srv://admin:Pergatory_1979@cluster0.3duu7.mongodb.net/local_library?retryWrites=true&w=majority'
 mongoose.connect(mongoDB,{useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
@@ -17,15 +23,39 @@ db.on('error', console.error.bind(console,'MongoDB connection error:'));
 mongoose.set('useFindAndModify', false)
 
 //to parse url encoded data
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 
 //to parse json data
-app.use(bodyParser.json());
+app.use(express.json());
 
 //SETS THE VIEW ENGINE 
-//app.set('view engine', 'pug');
 app.set('view engine','ejs');
 //app.set('views', './views');
+
+// Express session
+app.use(
+    session({
+        secret: 'its a secert for legacy and parts',
+        resave: true,
+        saveUninitialized: true,
+        cookie: { maxAge: 900000 }
+    })
+)
+
+// Passport middleware
+app.use(passport.initialize())
+app.use(passport.session())
+
+// Connect flash
+app.use(flash())
+
+// Global variables
+app.use(function(req, res, next) {
+    res.locals.success_msg = req.flash('success_msg')
+    res.locals.error_msg = req.flash('error_msg')
+    res.locals.error = req.flash('error')
+    next()
+})
 
 //Database Model for our Cards
 var boardSchema = mongoose.Schema({
@@ -120,10 +150,40 @@ var restockPartSchema = mongoose.Schema({
 });
 var RestockPart = mongoose.model("RestockPart", restockPartSchema);
 
+//Database Model for Admin Users
+const UserSchema = new mongoose.Schema({
+    nameFirst: {
+      type: String,
+      required: true
+    },
+    nameLast: {
+        type: String,
+        required: true
+      },
+    email: {
+      type: String,
+      required: true
+    },
+    password: {
+      type: String,
+      required: true
+    },
+    token: {
+        type: String
+    },
+    date: {
+      type: Date,
+      default: Date.now
+    }
+  })
+  
+  const User = mongoose.model('User', UserSchema)
+
 // Route for "LEGACY SEARCH"
 app.get('/', function(req,res){
     res.render('pages/home',{banner: "Legacy Search", message: ""});
 })
+
 //Route for search by Model Number results to be displayed
 app.post('/searchresult', function(req,res){
    var search = req.body;
@@ -132,10 +192,12 @@ app.post('/searchresult', function(req,res){
             res.render('pages/searchResult', {banner: 'Search Results', search,response, message:''});
         }).limit(20);
 });
+
 //THIS SECTION IS FOR "SEARCH BY SERIAL NUMBER"
 app.get('/serialSearch', function(req,res){
 	res.render('pages/serialSearch', {banner: 'Search By Serial Number', message:''});
 });
+
 app.post('/serialSearch', function(req,res){
     var search = req.body;
      Card.find({serialNumber: {$regex: search.searchWord, $options: 'i'}},
@@ -176,6 +238,7 @@ app.get('/del/:id/delete',function(req,res){
 app.get('/addCard', function(req,res){
     res.render('pages/addCard', {banner: 'Add To Legacy',message:''});
 })
+
 app.post('/addCard', function(req,res){
     var today = new Date();
     var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
@@ -194,12 +257,12 @@ app.post('/addCard', function(req,res){
             res.render('pages/cardAdmin', {banner: 'Legacy', message: 'Added Record to DB'});
     }) ;
 });
+
 // Edit function for legacy database
 app.get('/edit', function(req,res)
 {
     res.render('pages/editCard', {banner: 'Edit Entry', message:''});
 });
-
 
 //This begins the section for parts search
 app.get('/parts', function(req,res){
@@ -219,6 +282,7 @@ app.post('/partSearchResult', function(req,res){
 app.get('/lvSearch', function(req,res){
 	res.render('pages/partSearchLVHome', {banner: 'Search By "LV" Number', message:''});
 });
+
 app.post('/lvSearch', function(req,res){
     var search = req.body;
     Part.find({sapNumber: {$regex: search.searchWord, $options: 'i'}},
@@ -231,6 +295,7 @@ app.post('/lvSearch', function(req,res){
 app.get ('/addPart', function(req,res){
     res.render('pages/addPart', {banner: 'Add Part to DB', message: ''})
 })
+
 app.post('/addPart', function(req,res){
     var partInfo = req.body;
     var newPart = new Part({
@@ -257,7 +322,7 @@ app.post('/addPart', function(req,res){
 });
 
 // Routes to edit parts
-app.post('/updatePart', function(req,res){
+app.post('/updatePart', ensurePartAuthenticated, function(req,res){
     var search = req.body;
         Part.find({'stockedAS': {'$regex': search.searchWord,$options:'i'}},
         function(err,response){
@@ -267,7 +332,7 @@ app.post('/updatePart', function(req,res){
 
  app.post('/updateLVPart', function(req,res){
     var search = req.body;
-        Part.find({'sapNumber': {'$regex': search.searchWord,$options:'i:}'}},
+        Part.find({'sapNumber': {'$regex': search.searchWord,$options:'i'}},
         function(err,response){
             res.render('pages/editPart', {banner: 'Search Results to Update Parts Record', search,response, message:''});
         }).limit(1);
@@ -296,8 +361,8 @@ app.post('/editpart/:id', function(req,res){
     var addedit = req.body
     Part.findOneAndUpdate(updatepart, addedit,
         function (err, docs) { 
-            if (err){ 
-                console.log(err) 
+            if (docs == null){ 
+                res.render('pages/editPart', {banner: 'Search Results to Update Parts Record', addedit, message:'Did not update record'}) 
             } 
             else{ 
                 res.redirect('/partAdmin') 
@@ -395,6 +460,7 @@ app.post ('/getRequest', function(req,res){
     res.render('pages/requestPart', {banner: 'Parts Quote Request', message:'', requestStockedAS, requestedDescription, requestedSapNumber, requestedPrice})
     
 })
+
 app.post('/requestPart', function(req,res){
     var today = new Date();
     var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
@@ -420,7 +486,6 @@ app.post('/requestPart', function(req,res){
     });
   });
 
-
 app.get('/requestedquotes',function(req,res){
     RequestQuote.find(
         function(err,response){
@@ -438,26 +503,7 @@ app.get('/deleterequest/:id/delete',function(req,res){
         });
     });
 
-//Route to Admin page for Legacy to search by board number
-app.get ('/cardAdmin', function(req,res){
-    res.render('pages/cardAdmin', {banner: 'Admin',message:''})
-})
 
-//Route to Admin page for Legacy to search by serial number
-app.get ('/cardAdminSN', function(req,res){
-    res.render('pages/cardAdminSN', {banner: 'Admin',message:''})
-})
-
-//Route to Admin page for parts to search by Stocked As part number
-app.get ('/partAdmin', function(req,res){
-    res.render('pages/partAdmin', {banner: 'Admin',message:''})
-})
-
-
-//Route to Admin page to search by SAP part number
-app.get ('/partAdminLV', function(req,res){
-    res.render('pages/partAdminLV', {banner: 'Admin',message:''})
-})
 
 //ROUTE TO PRINT LABELS FROM ADMIN PAGE
 app.post('/printlabel', function(req,res){
@@ -475,7 +521,6 @@ app.get('/delete/:id/delete',function(req,res){
         });
     });
 //route to display all part reorders
-
 app.get('/restock',function(req,res){
     RestockPart.find(function(err,response){
         res.render('pages/restockSearchResults', {banner:'Part Restocks',message:'',response});
@@ -493,13 +538,13 @@ app.get('/deleterestock/:id/delete',function(req,res){
         });
     });
     
-    
 app.post('/restockPart', function(req,res){
     var restockAS = req.body.stockedAS
     var restockdescription1 = req.body.description1
     var restocksapNumber = req.body.sapNumber
     res.render('pages/restockPart', {banner: 'Restock Order',message:'',restockAS,restockdescription1,restocksapNumber});
 })
+
 app.post('/restockOrder', function(req,res){
     var today = new Date();
     var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
@@ -519,6 +564,7 @@ app.post('/restockOrder', function(req,res){
             res.render('pages/partSearchhome', {banner: 'Restock Order', message: 'Part Ordered'});
     }) ;
 });
+
 //BEGINS THE SECTION FOR CREATING QUOTES TO SEND TO THE CUSTOMER
 app.get('/createquote',function(req,res){
     res.render('pages/createquote', {banner:"Create Quote", message:''});
@@ -529,9 +575,184 @@ app.get ('/printlabel', function(req,res){
     res.render('pages/printlabel', {banner: 'Print Label', message: ''})
 })
 
+////////////////////////////////////// Password Code //////////////////////////////////////
+passport.use(
+    new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
+        // Match user
+        User.findOne({
+        email: email
+        }).then(user => {
+        if (!user) {
+            return done(null, false, { message: 'That email is not registered' })
+        } 
+        else if (user.token !== "Yes") {
+            return done(null, false, { message: 'You do not have approval' })
+        }
+        
+        // Match password
+        bcrypt.compare(password, user.password, (err, isMatch) => {
+            if (err) throw err
+            if (isMatch) {
+            return done(null, user)
+            } 
+            
+            else {
+            return done(null, false, { message: 'Password incorrect' })
+            }
+        })
+        })
+    })
+)
 
- 
+
+passport.serializeUser(function(user, done) {
+    done(null, user.id);
+})
+
+passport.deserializeUser(function(id, done) {
+    User.findById(id, function(err, user) {
+        done(err, user)
+    })
+})
+
+
+// Login Parts Page
+app.get('/loginPart', forwardPartAuthenticated, (req, res) => 
+    res.render('pages/loginPart', {banner: 'Parts Admin Login', message: ''})
+)
+
+//Route to Admin page for parts to search by Stocked As part number
+app.get ('/partAdmin', ensurePartAuthenticated, (req, res) =>
+    res.render('pages/partAdmin', {banner: 'Parts Admin', message:''})
+)
+
+//Route to Admin page to search by SAP part number
+app.get ('/partAdminLV', ensurePartAuthenticated, (req, res) =>
+    res.render('pages/partAdminLV', {banner: 'Parts Admin', message:''})
+)
+
+// Login Parts
+app.post('/loginPart', (req, res, next) => {
+    passport.authenticate('local', {
+        successRedirect: '/partAdmin',
+        failureRedirect: '/loginPart',
+        failureFlash: true
+    })(req, res, next)
+})
+  
+// Logout Parts
+app.get('/logoutPart', (req, res) => {
+    req.logout()
+    req.flash('success_msg', 'You are logged out')
+    res.redirect('/loginPart')
+})
+
+// Login Legacy Page
+app.get('/loginCard', forwardCardAuthenticated, (req, res) => 
+    res.render('pages/loginCard', {banner: 'Legacy Admin Login', message: ''})
+)
+
+//Route to Admin page for Legacy to search by board number
+app.get ('/cardAdmin', ensureCardAuthenticated, (req,res) =>
+    res.render('pages/cardAdmin', {banner: 'Legacy Admin', message:''})
+)
+
+//Route to Admin page for Legacy to search by serial number
+app.get ('/cardAdminSN', ensureCardAuthenticated, (req,res) =>
+    res.render('pages/cardAdminSN', {banner: 'Legacy Admin', message:''})
+)
+
+// Login Legacy
+app.post('/loginCard', (req, res, next) => {
+    passport.authenticate('local', {
+        successRedirect: '/cardAdmin',
+        failureRedirect: '/loginCard',
+        failureFlash: true
+    })(req, res, next)
+})
+  
+// Logout Legacy
+app.get('/logoutCard', (req, res) => {
+    req.logout()
+    req.flash('success_msg', 'You are logged out')
+    res.redirect('/loginCard')
+})
+
+//Register for Admin Pages
+app.get('/register', forwardAuthenticated, (req, res) => res.render('pages/register', { banner: 'New User', message:''}))
+
+// Register
+app.post('/register', (req, res) => {
+    const { nameFirst, nameLast, email, password, password2 } = req.body
+    let errors = []
+  
+    if (!nameFirst || !nameLast || !email || !password || !password2) {
+      errors.push({ msg: 'Please enter all fields' })
+    }
+  
+    if (password != password2) {
+      errors.push({ msg: 'Passwords do not match' })
+    }
+  
+    if (password.length < 6) {
+      errors.push({ msg: 'Password must be at least 6 characters' })
+    }
+  
+    if (errors.length > 0) {
+      res.render('pages/register', {
+        banner:'',
+        message:'',
+        errors,
+        nameFirst,
+        nameLast,
+        email,
+        password,
+        password2
+      })
+    } else {
+      User.findOne({ email: email }).then(user => {
+        if (user) {
+          errors.push({ msg: 'Email already exists' })
+          res.render('pages/register', {
+            banner:'',
+            message:'',
+            errors,
+            nameFirst,
+            nameLast,
+            email,
+            password,
+            password2
+          })
+        } else {
+          var token = "No"  
+          const newUser = new User({
+            nameFirst,
+            nameLast,
+            email,
+            password,
+            token
+          });
+  
+          bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(newUser.password, salt, (err, hash) => {
+              if (err) throw err
+              newUser.password = hash
+              newUser.save()
+                .then(user => {
+                  req.flash(
+                    'success_msg',
+                    'You have registered awaiting approval'
+                  )
+                  res.redirect('/loginPart')
+                })
+                .catch(err => console.log(err))
+            })
+          })
+        }
+      })
+    }
+  })
+
 //Port that the app sends to
-//app.listen(3000);
 app.listen(process.env.PORT || 5000);
 //console.log("Running on port 5000")

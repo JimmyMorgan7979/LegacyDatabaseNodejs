@@ -19,7 +19,7 @@
                             <% response.forEach(function(item){%>
                                 <li class="my-3 text-left">
                                     <form action='/getRequest' method="POST">
-                                        <strong>Stocked As: </strong><%= item.stockedAS %> </br>
+                                        <strong>Stocked As: </strong class="pr-2"><%= item.stockedAS %> </br>
                                         <% if (item.description1) { %>
                                             <strong class="pr-2">Description: </strong> <%= item.description1 %><br>
                                         <% } %>
