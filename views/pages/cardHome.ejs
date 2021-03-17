@@ -14,14 +14,15 @@
                     <!--Spacing--> 
                 </div>
                 <div class="col-sm-6">
-                    <form action='/searchResult', method='POST',name = "form">
+                    <form action='/cardSearchResult', method='POST',name = "form">
                         <div class="form-group p-2">
                             <label class="h5" for='searchword'> Enter a Board Number to Search our Legacy Stock</label><br>
                             <small> Don't konw your exact part or revision number? <br> 
-                                    You can enter a partial number. EX: DS200LRPA or <a href="/serialSearch">Search by serial number</a>                      
+                                    You can enter a partial number. EX: DS200LRPA or <a href="/cardSearchSN">Search by serial number</a>                      
                             </small>
                             <input class="form-control my-3" type='text' name='searchWord' placeholder= 'Enter a search value'></input>
                             <button class="btn btn-danger m-2" type='submit'>Submit</button> 
+                            <a type='button' class="btn btn-primary m-2" href="/cardLogin">Login for Legacy Admin</a>
                         </div>
                     </form> 
                 </div>

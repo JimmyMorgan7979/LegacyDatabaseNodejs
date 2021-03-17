@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <%- include('../partials/head'); %>
+    </head>
+    <body>
+        <div class="container">
+            <%- include('../partials/header'); %>
+            <%- include('../partials/links'); %>
+            <%- include('../partials/banner'); %> 
+            <%- include('../partials/message'); %>       
+            <div class="row mt-3">
+                <div class="col-sm">
+                    <!--Spacing--> 
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-center mb-4 h5">Admin for Legacy DB
+                        <form action="/cardUpdate" method="POST">
+                            <div class="form-group text-center">
+                                <label for="searchword"></label>
+                                <small><br> Please enter the exact board number. or</small>
+                                <a class="small ml-1" href="/cardAdminSN">Search by Serial Number</a>
+                                <input class="form-control my-3" type="text" name="searchWord" placeholder="Enter Board Number " />
+                                <button class="btn btn-danger m-2" type="submit">Search for Board to Edit</button>
+                            </div>
+                            <div class="form-group text-center">
+                                <a class="btn btn-success m-2" href="/cardAdd">Add Board to DB </br></a>
+                            </div>
+                            <div class="form-group text-center">
+                                <a href="/cardLogout" class="btn btn-secondary">Logout</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <!--Spacing--> 
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

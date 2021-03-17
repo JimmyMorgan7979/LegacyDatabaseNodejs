@@ -1,29 +1,61 @@
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
-
+var express = require('express')
+var app = express()
+const passport = require('passport')
+const flash = require('connect-flash')
+const session = require('express-session')
+const path = require('path')
+const bcrypt = require('bcryptjs')
+const { forwardAuthenticated, ensurePartAuthenticated, forwardPartAuthenticated, ensureCardAuthenticated, forwardCardAuthenticated } = require('./config/auth')
+const LocalStrategy = require('passport-local').Strategy
 
 // the following allows you to serve static files
-app.use('/static', express.static('public'))
+app.use('/static', express.static(path.join(__dirname, 'public')))
 
 //Mongodb connection new 10-22-20
 var mongoose = require('mongoose');
-//var mongoDB='mongodb://localhost:27017/Inventory';
-var mongoDB = 'mongodb+srv://admin:Pergatory_1979@cluster0.3duu7.mongodb.net/local_library?retryWrites=true&w=majority'
+var mongoDB ='mongodb://localhost:27017/Inventory';
+//var mongoDB = 'mongodb+srv://admin:Pergatory_1979@cluster0.3duu7.mongodb.net/local_library?retryWrites=true&w=majority'
 mongoose.connect(mongoDB,{useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console,'MongoDB connection error:'));
 
+//DeprecationWarning disable
+mongoose.set('useFindAndModify', false)
+
 //to parse url encoded data
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 
 //to parse json data
-app.use(bodyParser.json());
+app.use(express.json());
 
 //SETS THE VIEW ENGINE 
-//app.set('view engine', 'pug');
 app.set('view engine','ejs');
 //app.set('views', './views');
+
+// Express session
+app.use(
+    session({
+        secret: 'its a secert for legacy and parts',
+        resave: true,
+        saveUninitialized: true,
+        cookie: { maxAge: 900000 }
+    })
+)
+
+// Passport middleware
+app.use(passport.initialize())
+app.use(passport.session())
+
+// Connect flash
+app.use(flash())
+
+// Global variables
+app.use(function(req, res, next) {
+    res.locals.success_msg = req.flash('success_msg')
+    res.locals.error_msg = req.flash('error_msg')
+    res.locals.error = req.flash('error')
+    next()
+})
 
 //Database Model for our Cards
 var boardSchema = mongoose.Schema({
@@ -118,27 +150,59 @@ var restockPartSchema = mongoose.Schema({
 });
 var RestockPart = mongoose.model("RestockPart", restockPartSchema);
 
+//Database Model for Admin Users
+const UserSchema = new mongoose.Schema({
+    nameFirst: {
+      type: String,
+      required: true
+    },
+    nameLast: {
+        type: String,
+        required: true
+      },
+    email: {
+      type: String,
+      required: true
+    },
+    password: {
+      type: String,
+      required: true
+    },
+    token: {
+        type: String
+    },
+    date: {
+      type: Date,
+      default: Date.now
+    }
+  })
+  
+  const User = mongoose.model('User', UserSchema)
+
 // Route for "LEGACY SEARCH"
 app.get('/', function(req,res){
-    res.render('pages/home',{banner: "Legacy Search", message: ""});
+    res.render('pages/cardHome',{banner: "Legacy Search", message: ""});
 })
+
 //Route for search by Model Number results to be displayed
-app.post('/searchresult', function(req,res){
+app.post('/cardSearchResult', function(req,res){
    var search = req.body;
     Card.find({partNumber: {$regex: search.searchWord, $options: 'i'}},
         function(err,response){
-            res.render('pages/searchResult', {banner: 'Search Results', search,response, message:''});
+            res.render('pages/cardSearchResult', {banner: 'Search Results', search,response, message:''});
         }).limit(20);
 });
+
 //THIS SECTION IS FOR "SEARCH BY SERIAL NUMBER"
-app.get('/serialSearch', function(req,res){
-	res.render('pages/serialSearch', {banner: 'Search By Serial Number', message:''});
+app.get('/cardSearchSN', function(req,res){
+	res.render('pages/cardSearchSN', {banner: 'Search By Serial Number', message:''});
 });
-app.post('/serialSearch', function(req,res){
+
+app.post('/cardSearchResultSN', function(req,res){
     var search = req.body;
      Card.find({serialNumber: {$regex: search.searchWord, $options: 'i'}},
          function(err,response){
-             res.render('pages/serialSearchResult', {banner: 'Search Results', search,response, message:''});
+             res.render('pages/cardSearchResultSN', {banner: 'Search Results', search,response, message:''});
          }).limit(20);
  });
 
@@ -166,15 +230,16 @@ app.get('/del/:id/delete',function(req,res){
         function(err){
             if(err) res.json(err);
             else
-                res.redirect('/')
+                res.redirect('/cardAdmin')
         });
 });
 
 //Route for items to be added to legacy database
-app.get('/addCard', function(req,res){
-    res.render('pages/addCard', {banner: 'Add To Legacy',message:''});
+app.get('/cardAdd', function(req,res){
+    res.render('pages/cardAdd', {banner: 'Add To Legacy',message:''});
 })
-app.post('/addCard', function(req,res){
+
+app.post('/cardAdd', function(req,res){
     var today = new Date();
     var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
     var cardInfo = req.body;
@@ -189,19 +254,19 @@ app.post('/addCard', function(req,res){
         if(err)
             res.send("error");
         else
-            res.render('pages/home', {banner: 'Legacy', message: 'Added Record to DB'});
+            res.render('pages/cardAdmin', {banner: 'Legacy', message: 'Added Record to DB'});
     }) ;
 });
+
 // Edit function for legacy database
 app.get('/edit', function(req,res)
 {
-    res.render('pages/editCard', {banner: 'Edit Entry', message:''});
+    res.render('pages/cardEdit', {banner: 'Edit Entry', message:''});
 });
 
-
 //This begins the section for parts search
-app.get('/parts', function(req,res){
-    res.render('pages/partSearchhome', {banner: 'Parts Search', message:''});
+app.get('/partHome', function(req,res){
+    res.render('pages/partHome', {banner: 'Parts Search', message:''});
 });
 
 //display parts search results
@@ -214,10 +279,11 @@ app.post('/partSearchResult', function(req,res){
 });
 
 //THIS BEGINS THE SECTION FOR SEARCH PARTS BY LV NUMBER
-app.get('/lvSearch', function(req,res){
-	res.render('pages/partSearchLVHome', {banner: 'Search By "LV" Number', message:''});
+app.get('/partHomeLV', function(req,res){
+	res.render('pages/partHomeLV', {banner: 'Search By "LV" Number', message:''});
 });
-app.post('/lvSearch', function(req,res){
+
+app.post('/partSearchResultLV', function(req,res){
     var search = req.body;
     Part.find({sapNumber: {$regex: search.searchWord, $options: 'i'}},
         function(err,response){
@@ -226,10 +292,11 @@ app.post('/lvSearch', function(req,res){
 });
 
 //Route to add parts
-app.get ('/addPart', function(req,res){
-    res.render('pages/addPart', {banner: 'Add Part to DB', message: ''})
+app.get ('/partAdd', function(req,res){
+    res.render('pages/partAdd', {banner: 'Add Part to DB', message: ''})
 })
-app.post('/addPart', function(req,res){
+
+app.post('/partAdd', function(req,res){
     var partInfo = req.body;
     var newPart = new Part({
         stockedAS: partInfo.stockedAS,
@@ -255,30 +322,47 @@ app.post('/addPart', function(req,res){
 });
 
 // Routes to edit parts
-app.post('/updatePart', function(req,res){
+app.post('/partUpdate', ensurePartAuthenticated, function(req,res){
     var search = req.body;
         Part.find({'stockedAS': {'$regex': search.searchWord,$options:'i'}},
         function(err,response){
-            res.render('pages/editPart', {banner: 'Search Results to Update Parts Record', search,response, message:''});
+            res.render('pages/partEdit', {banner: 'Search Results to Update Parts Record', search,response, message:''});
         }).limit(1);
  });
 
- app.post('/updateLVPart', function(req,res){
+ app.post('/partUpdateLV', function(req,res){
     var search = req.body;
-        Part.find({'sapNumber': {'$regex': search.searchWord,$options:'i:}'}},
+        Part.find({'sapNumber': {'$regex': search.searchWord,$options:'i'}},
         function(err,response){
-            res.render('pages/editPart', {banner: 'Search Results to Update Parts Record', search,response, message:''});
+            res.render('pages/partEdit', {banner: 'Search Results to Update Parts Record', search,response, message:''});
+        }).limit(1);
+ });
+
+ // Routes to edit cards
+app.post('/cardUpdate', function(req,res){
+    var search = req.body;
+        Card.find({'partNumber': {'$regex': search.searchWord,$options:'i'}},
+        function(err,response){
+            res.render('pages/cardEdit', {banner: 'Search Results to Update Legacy Record', search,response, message:''});
+        }).limit(1);
+ });
+
+ app.post('/cardUpdateSN', function(req,res){
+    var search = req.body;
+        Card.find({'serialNumber': {'$regex': search.searchWord,$options:'i:}'}},
+        function(err,response){
+            res.render('pages/cardEdit', {banner: 'Search Results to Update Legacy Record', search,response, message:''});
         }).limit(1);
  });
 
 // Edit function for parts database
-app.post('/editpart/:id', function(req,res){
+app.post('/partEdit/:id', function(req,res){
     var updatepart = {_id: req.params.id}
     var addedit = req.body
     Part.findOneAndUpdate(updatepart, addedit,
         function (err, docs) { 
-            if (err){ 
-                console.log(err) 
+            if (docs == null){ 
+                res.render('pages/partEdit', {banner: 'Search Results to Update Parts Record', addedit, message:'Did not update record'}) 
             } 
             else{ 
                 res.redirect('/partAdmin') 
@@ -286,9 +370,21 @@ app.post('/editpart/:id', function(req,res){
     })
 })
 
-
+// Edit function for legacy database
+app.post('/cardEdit/:id', function(req,res){
+    var updatepart = {_id: req.params.id}
+    var addedit = req.body
+    Card.findOneAndUpdate(updatepart, addedit,
+        function (err, docs) { 
+            if (err){ 
+                console.log(err) 
+            } 
+            else{ 
+                res.redirect('/cardAdmin') 
+            } 
+    })
+})
         
-
 //Route for parts to be deleted and inserted into the parts delete table
 app.get('/delpart/:id/delete',function(req,res){
     test = Part.find({_id: req.params.id},
@@ -356,15 +452,16 @@ app.post('/requestNewPart', function(req,res){
 });
 
 //Route to send Email to request quote for parts
-app.post ('/getRequest', function(req,res){
+app.post ('/partRequest', function(req,res){
     var requestStockedAS=req.body.stockedAS
     var requestedDescription=req.body.description1
     var requestedSapNumber=req.body.sapNumber
     var requestedPrice=req.body.price
-    res.render('pages/requestPart', {banner: 'Parts Quote Request', message:'', requestStockedAS, requestedDescription, requestedSapNumber, requestedPrice})
+    res.render('pages/partRequest', {banner: 'Parts Quote Request', message:'', requestStockedAS, requestedDescription, requestedSapNumber, requestedPrice})
     
 })
-app.post('/requestPart', function(req,res){
+
+app.post('/quoteRequest', function(req,res){
     var today = new Date();
     var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
     var requestInfo = req.body;
@@ -385,47 +482,22 @@ app.post('/requestPart', function(req,res){
         if(err)
             res.send("error");
         else
-            res.render('pages/sentRequest', {banner: 'Parts Quote Request', message: 'Request Sent'});
+            res.render('pages/requestSent', {banner: 'Parts Quote Request', message: 'Request Sent'});
     });
   });
 
-
-app.get('/requestedquotes',function(req,res){
-    RequestQuote.find(
-        function(err,response){
-            res.render('pages/requestSearchResults', {banner: 'Requests',message:'',response});
-        });
-});
-
 //route to delete part requests from the table
-app.get('/deleterequest/:id/delete',function(req,res){
+app.get('/deleteRequest/:id/delete',function(req,res){
     RequestQuote.deleteOne({_id: req.params.id},
         function(err){
             if(err) res.json(err);
             else
-                res.redirect('/requestedquotes')
+                res.redirect('/quoteRequests')
         });
     });
 
-//Route to Admin page to search by Stocked As part number
-app.get ('/partAdmin', function(req,res){
-    res.render('pages/partAdmin', {banner: 'Admin',message:''})
-})
-
-
-//Route to Admin page to search by SAP part number
-app.get ('/partAdminLV', function(req,res){
-    res.render('pages/partAdminLV', {banner: 'Admin',message:''})
-})
-
-//ROUTE TO PRINT LABELS FROM ADMIN PAGE
-app.post('/printlabel', function(req,res){
-    var printinfo = req.body;
-    res.render('pages/printlabel', {banner: '', message:'', printinfo})
-});
-
 //Begins the section to delete quote requests from the table
-app.get('/delete/:id/delete',function(req,res){
+app.get('/quoteDelete/:id/delete',function(req,res){
     RequestQuote.deleteOne({_id: req.params.id},
         function(err){
             if(err) res.json(err);
@@ -433,16 +505,24 @@ app.get('/delete/:id/delete',function(req,res){
                 res.redirect('/partAdmin')
         });
     });
+    
 //route to display all part reorders
-
 app.get('/restock',function(req,res){
     RestockPart.find(function(err,response){
         res.render('pages/restockSearchResults', {banner:'Part Restocks',message:'',response});
     });
 });
 
+//route to display all requested quotes
+app.get('/quoteRequests',function(req,res){
+    RequestQuote.find(
+        function(err,response){
+            res.render('pages/requestSearchResults', {banner: 'Requests',message:'',response});
+        });
+});
+
 //route to delete part requests/restock from the table
-app.get('/deleterestock/:id/delete',function(req,res){
+app.get('/restockDelete/:id/delete',function(req,res){
     RestockPart.deleteOne({_id: req.params.id},
         function(err){
             if(err) res.json(err);
@@ -452,13 +532,13 @@ app.get('/deleterestock/:id/delete',function(req,res){
         });
     });
     
-    
-app.post('/restockPart', function(req,res){
+app.post('/partRestock', function(req,res){
     var restockAS = req.body.stockedAS
     var restockdescription1 = req.body.description1
     var restocksapNumber = req.body.sapNumber
-    res.render('pages/restockPart', {banner: 'Restock Order',message:'',restockAS,restockdescription1,restocksapNumber});
+    res.render('pages/partRestock', {banner: 'Restock Order',message:'',restockAS,restockdescription1,restocksapNumber});
 })
+
 app.post('/restockOrder', function(req,res){
     var today = new Date();
     var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
@@ -475,9 +555,10 @@ app.post('/restockOrder', function(req,res){
         if(err)
             res.send("error");
         else
-            res.render('pages/partSearchhome', {banner: 'Restock Order', message: 'Part Ordered'});
+            res.render('pages/partHome', {banner: 'Restock Order', message: 'Part Ordered'});
     }) ;
 });
+
 //BEGINS THE SECTION FOR CREATING QUOTES TO SEND TO THE CUSTOMER
 app.get('/createquote',function(req,res){
     res.render('pages/createquote', {banner:"Create Quote", message:''});
@@ -488,9 +569,191 @@ app.get ('/printlabel', function(req,res){
     res.render('pages/printlabel', {banner: 'Print Label', message: ''})
 })
 
+//ROUTE TO PRINT LABELS FROM ADMIN PAGE
+app.post('/printlabel', function(req,res){
+    var printinfo = req.body;
+    res.render('pages/printlabel', {banner: '', message:'', printinfo})
+});
 
- 
+
+////////////////////////////////////// Password Code //////////////////////////////////////
+passport.use(
+    new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
+        // Match user
+        User.findOne({
+        email: email
+        }).then(user => {
+        if (!user) {
+            return done(null, false, { message: 'That email is not registered' })
+        } 
+        else if (user.token !== "Yes") {
+            return done(null, false, { message: 'You do not have approval' })
+        }
+        
+        // Match password
+        bcrypt.compare(password, user.password, (err, isMatch) => {
+            if (err) throw err
+            if (isMatch) {
+            return done(null, user)
+            } 
+            
+            else {
+            return done(null, false, { message: 'Password incorrect' })
+            }
+        })
+        })
+    })
+)
+
+
+passport.serializeUser(function(user, done) {
+    done(null, user.id);
+})
+
+passport.deserializeUser(function(id, done) {
+    User.findById(id, function(err, user) {
+        done(err, user)
+    })
+})
+
+
+// Login Parts Page
+app.get('/partLogin', forwardPartAuthenticated, (req, res) => 
+    res.render('pages/partLogin', {banner: 'Parts Admin Login', message: ''})
+)
+
+//Route to Admin page for parts to search by Stocked As part number
+app.get ('/partAdmin', ensurePartAuthenticated, (req, res) =>
+    res.render('pages/partAdmin', {banner: 'Parts Admin', message:''})
+)
+
+//Route to Admin page to search by SAP part number
+app.get ('/partAdminLV', ensurePartAuthenticated, (req, res) =>
+    res.render('pages/partAdminLV', {banner: 'Parts Admin', message:''})
+)
+
+// Login Parts
+app.post('/partLogin', (req, res, next) => {
+    passport.authenticate('local', {
+        successRedirect: '/partAdmin',
+        failureRedirect: '/partLogin',
+        failureFlash: true
+    })(req, res, next)
+})
+  
+// Logout Parts
+app.get('/partLogout', (req, res) => {
+    req.logout()
+    req.flash('success_msg', 'You are logged out')
+    res.redirect('/partLogin')
+})
+
+// Login Legacy Page
+app.get('/cardLogin', forwardCardAuthenticated, (req, res) => 
+    res.render('pages/cardLogin', {banner: 'Legacy Admin Login', message: ''})
+)
+
+//Route to Admin page for Legacy to search by board number
+app.get ('/cardAdmin', ensureCardAuthenticated, (req,res) =>
+    res.render('pages/cardAdmin', {banner: 'Legacy Admin', message:''})
+)
+
+//Route to Admin page for Legacy to search by serial number
+app.get ('/cardAdminSN', ensureCardAuthenticated, (req,res) =>
+    res.render('pages/cardAdminSN', {banner: 'Legacy Admin', message:''})
+)
+
+// Login Legacy
+app.post('/cardLogin', (req, res, next) => {
+    passport.authenticate('local', {
+        successRedirect: '/cardAdmin',
+        failureRedirect: '/cardLogin',
+        failureFlash: true
+    })(req, res, next)
+})
+  
+// Logout Legacy
+app.get('/cardLogout', (req, res) => {
+    req.logout()
+    req.flash('success_msg', 'You are logged out')
+    res.redirect('/cardLogin')
+})
+
+//Register for Admin Pages
+app.get('/register', forwardAuthenticated, (req, res) => res.render('pages/register', { banner: 'New User', message:''}))
+
+// Register
+app.post('/register', (req, res) => {
+    const { nameFirst, nameLast, email, password, password2 } = req.body
+    let errors = []
+  
+    if (!nameFirst || !nameLast || !email || !password || !password2) {
+      errors.push({ msg: 'Please enter all fields' })
+    }
+  
+    if (password != password2) {
+      errors.push({ msg: 'Passwords do not match' })
+    }
+  
+    if (password.length < 6) {
+      errors.push({ msg: 'Password must be at least 6 characters' })
+    }
+  
+    if (errors.length > 0) {
+      res.render('pages/register', {
+        banner:'',
+        message:'',
+        errors,
+        nameFirst,
+        nameLast,
+        email,
+        password,
+        password2
+      })
+    } else {
+      User.findOne({ email: email }).then(user => {
+        if (user) {
+          errors.push({ msg: 'Email already exists' })
+          res.render('pages/register', {
+            banner:'',
+            message:'',
+            errors,
+            nameFirst,
+            nameLast,
+            email,
+            password,
+            password2
+          })
+        } else {
+          var token = "No"  
+          const newUser = new User({
+            nameFirst,
+            nameLast,
+            email,
+            password,
+            token
+          });
+  
+          bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(newUser.password, salt, (err, hash) => {
+              if (err) throw err
+              newUser.password = hash
+              newUser.save()
+                .then(user => {
+                  req.flash(
+                    'success_msg',
+                    'You have registered awaiting approval'
+                  )
+                  res.redirect('/partLogin')
+                })
+                .catch(err => console.log(err))
+            })
+          })
+        }
+      })
+    }
+  })
+
 //Port that the app sends to
-//app.listen(3000);
 app.listen(process.env.PORT || 5000);
 //console.log("Running on port 5000")
