@@ -18,7 +18,7 @@
                         <ol class="list-unstyled">
                             <% response.forEach(function(item){%>
                                 <li class="my-3 text-left">
-                                    <form action='/getRequest' method="POST">
+                                    <form action='/partRequest' method="POST">
                                         <strong>Stocked As: </strong class="pr-2"><%= item.stockedAS %> </br>
                                         <% if (item.description1) { %>
                                             <strong class="pr-2">Description: </strong> <%= item.description1 %><br>
@@ -62,7 +62,7 @@
                                         <input type='hidden', name='price', value='<%=item.price%>'>
                                         <button class= "btn btn-danger mt-2" type='submit'>Request Quote</button>
                                         </form>
-                                        <form action='/restockPart' method="POST">
+                                        <form action='/partRestock' method="POST">
                                         <input type='hidden', name='stockedAS', value='<%=item.stockedAS%>'>
                                         <input type='hidden', name='description1', value='<%=item.description1%>'>
                                         <input type='hidden', name='sapNumber', value='<%=item.sapNumber%>'>
@@ -73,7 +73,7 @@
                         </ol>
                         <a class="btn btn-primary mt-4 text-white" href="/requestNewPart">Request Part not on list</a> 
                     <div>
-                        <a class="btn btn-secondary mt-4 text-white" href="/parts">Go Back to Parts Search </a>
+                        <a class="btn btn-secondary mt-4 text-white" href="/partHome">Go Back to Parts Search </a>
                     </div>
                     </div>
                    

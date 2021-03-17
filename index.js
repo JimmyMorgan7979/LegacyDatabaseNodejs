@@ -181,28 +181,28 @@ const UserSchema = new mongoose.Schema({
 
 // Route for "LEGACY SEARCH"
 app.get('/', function(req,res){
-    res.render('pages/home',{banner: "Legacy Search", message: ""});
+    res.render('pages/cardHome',{banner: "Legacy Search", message: ""});
 })
 
 //Route for search by Model Number results to be displayed
-app.post('/searchresult', function(req,res){
+app.post('/cardSearchResult', function(req,res){
    var search = req.body;
     Card.find({partNumber: {$regex: search.searchWord, $options: 'i'}},
         function(err,response){
-            res.render('pages/searchResult', {banner: 'Search Results', search,response, message:''});
+            res.render('pages/cardSearchResult', {banner: 'Search Results', search,response, message:''});
         }).limit(20);
 });
 
 //THIS SECTION IS FOR "SEARCH BY SERIAL NUMBER"
-app.get('/serialSearch', function(req,res){
-	res.render('pages/serialSearch', {banner: 'Search By Serial Number', message:''});
+app.get('/cardSearchSN', function(req,res){
+	res.render('pages/cardSearchSN', {banner: 'Search By Serial Number', message:''});
 });
 
-app.post('/serialSearch', function(req,res){
+app.post('/cardSearchResultSN', function(req,res){
     var search = req.body;
      Card.find({serialNumber: {$regex: search.searchWord, $options: 'i'}},
          function(err,response){
-             res.render('pages/searchResult', {banner: 'Search Results', search,response, message:''});
+             res.render('pages/cardSearchResultSN', {banner: 'Search Results', search,response, message:''});
          }).limit(20);
  });
 
@@ -235,11 +235,11 @@ app.get('/del/:id/delete',function(req,res){
 });
 
 //Route for items to be added to legacy database
-app.get('/addCard', function(req,res){
-    res.render('pages/addCard', {banner: 'Add To Legacy',message:''});
+app.get('/cardAdd', function(req,res){
+    res.render('pages/cardAdd', {banner: 'Add To Legacy',message:''});
 })
 
-app.post('/addCard', function(req,res){
+app.post('/cardAdd', function(req,res){
     var today = new Date();
     var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
     var cardInfo = req.body;
@@ -261,12 +261,12 @@ app.post('/addCard', function(req,res){
 // Edit function for legacy database
 app.get('/edit', function(req,res)
 {
-    res.render('pages/editCard', {banner: 'Edit Entry', message:''});
+    res.render('pages/cardEdit', {banner: 'Edit Entry', message:''});
 });
 
 //This begins the section for parts search
-app.get('/parts', function(req,res){
-    res.render('pages/partSearchhome', {banner: 'Parts Search', message:''});
+app.get('/partHome', function(req,res){
+    res.render('pages/partHome', {banner: 'Parts Search', message:''});
 });
 
 //display parts search results
@@ -279,11 +279,11 @@ app.post('/partSearchResult', function(req,res){
 });
 
 //THIS BEGINS THE SECTION FOR SEARCH PARTS BY LV NUMBER
-app.get('/lvSearch', function(req,res){
-	res.render('pages/partSearchLVHome', {banner: 'Search By "LV" Number', message:''});
+app.get('/partHomeLV', function(req,res){
+	res.render('pages/partHomeLV', {banner: 'Search By "LV" Number', message:''});
 });
 
-app.post('/lvSearch', function(req,res){
+app.post('/partSearchResultLV', function(req,res){
     var search = req.body;
     Part.find({sapNumber: {$regex: search.searchWord, $options: 'i'}},
         function(err,response){
@@ -292,11 +292,11 @@ app.post('/lvSearch', function(req,res){
 });
 
 //Route to add parts
-app.get ('/addPart', function(req,res){
-    res.render('pages/addPart', {banner: 'Add Part to DB', message: ''})
+app.get ('/partAdd', function(req,res){
+    res.render('pages/partAdd', {banner: 'Add Part to DB', message: ''})
 })
 
-app.post('/addPart', function(req,res){
+app.post('/partAdd', function(req,res){
     var partInfo = req.body;
     var newPart = new Part({
         stockedAS: partInfo.stockedAS,
@@ -322,47 +322,47 @@ app.post('/addPart', function(req,res){
 });
 
 // Routes to edit parts
-app.post('/updatePart', ensurePartAuthenticated, function(req,res){
+app.post('/partUpdate', ensurePartAuthenticated, function(req,res){
     var search = req.body;
         Part.find({'stockedAS': {'$regex': search.searchWord,$options:'i'}},
         function(err,response){
-            res.render('pages/editPart', {banner: 'Search Results to Update Parts Record', search,response, message:''});
+            res.render('pages/partEdit', {banner: 'Search Results to Update Parts Record', search,response, message:''});
         }).limit(1);
  });
 
- app.post('/updateLVPart', function(req,res){
+ app.post('/partUpdateLV', function(req,res){
     var search = req.body;
         Part.find({'sapNumber': {'$regex': search.searchWord,$options:'i'}},
         function(err,response){
-            res.render('pages/editPart', {banner: 'Search Results to Update Parts Record', search,response, message:''});
+            res.render('pages/partEdit', {banner: 'Search Results to Update Parts Record', search,response, message:''});
         }).limit(1);
  });
 
  // Routes to edit cards
-app.post('/updateCard', function(req,res){
+app.post('/cardUpdate', function(req,res){
     var search = req.body;
         Card.find({'partNumber': {'$regex': search.searchWord,$options:'i'}},
         function(err,response){
-            res.render('pages/editCard', {banner: 'Search Results to Update Legacy Record', search,response, message:''});
+            res.render('pages/cardEdit', {banner: 'Search Results to Update Legacy Record', search,response, message:''});
         }).limit(1);
  });
 
- app.post('/updateSNCard', function(req,res){
+ app.post('/cardUpdateSN', function(req,res){
     var search = req.body;
         Card.find({'serialNumber': {'$regex': search.searchWord,$options:'i:}'}},
         function(err,response){
-            res.render('pages/editCard', {banner: 'Search Results to Update Legacy Record', search,response, message:''});
+            res.render('pages/cardEdit', {banner: 'Search Results to Update Legacy Record', search,response, message:''});
         }).limit(1);
  });
 
 // Edit function for parts database
-app.post('/editpart/:id', function(req,res){
+app.post('/partEdit/:id', function(req,res){
     var updatepart = {_id: req.params.id}
     var addedit = req.body
     Part.findOneAndUpdate(updatepart, addedit,
         function (err, docs) { 
             if (docs == null){ 
-                res.render('pages/editPart', {banner: 'Search Results to Update Parts Record', addedit, message:'Did not update record'}) 
+                res.render('pages/partEdit', {banner: 'Search Results to Update Parts Record', addedit, message:'Did not update record'}) 
             } 
             else{ 
                 res.redirect('/partAdmin') 
@@ -371,7 +371,7 @@ app.post('/editpart/:id', function(req,res){
 })
 
 // Edit function for legacy database
-app.post('/editcard/:id', function(req,res){
+app.post('/cardEdit/:id', function(req,res){
     var updatepart = {_id: req.params.id}
     var addedit = req.body
     Card.findOneAndUpdate(updatepart, addedit,
@@ -452,16 +452,16 @@ app.post('/requestNewPart', function(req,res){
 });
 
 //Route to send Email to request quote for parts
-app.post ('/getRequest', function(req,res){
+app.post ('/partRequest', function(req,res){
     var requestStockedAS=req.body.stockedAS
     var requestedDescription=req.body.description1
     var requestedSapNumber=req.body.sapNumber
     var requestedPrice=req.body.price
-    res.render('pages/requestPart', {banner: 'Parts Quote Request', message:'', requestStockedAS, requestedDescription, requestedSapNumber, requestedPrice})
+    res.render('pages/partRequest', {banner: 'Parts Quote Request', message:'', requestStockedAS, requestedDescription, requestedSapNumber, requestedPrice})
     
 })
 
-app.post('/requestPart', function(req,res){
+app.post('/quoteRequest', function(req,res){
     var today = new Date();
     var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
     var requestInfo = req.body;
@@ -482,37 +482,22 @@ app.post('/requestPart', function(req,res){
         if(err)
             res.send("error");
         else
-            res.render('pages/sentRequest', {banner: 'Parts Quote Request', message: 'Request Sent'});
+            res.render('pages/requestSent', {banner: 'Parts Quote Request', message: 'Request Sent'});
     });
   });
 
-app.get('/requestedquotes',function(req,res){
-    RequestQuote.find(
-        function(err,response){
-            res.render('pages/requestSearchResults', {banner: 'Requests',message:'',response});
-        });
-});
-
 //route to delete part requests from the table
-app.get('/deleterequest/:id/delete',function(req,res){
+app.get('/deleteRequest/:id/delete',function(req,res){
     RequestQuote.deleteOne({_id: req.params.id},
         function(err){
             if(err) res.json(err);
             else
-                res.redirect('/requestedquotes')
+                res.redirect('/quoteRequests')
         });
     });
 
-
-
-//ROUTE TO PRINT LABELS FROM ADMIN PAGE
-app.post('/printlabel', function(req,res){
-    var printinfo = req.body;
-    res.render('pages/printlabel', {banner: '', message:'', printinfo})
-});
-
 //Begins the section to delete quote requests from the table
-app.get('/delete/:id/delete',function(req,res){
+app.get('/quoteDelete/:id/delete',function(req,res){
     RequestQuote.deleteOne({_id: req.params.id},
         function(err){
             if(err) res.json(err);
@@ -520,6 +505,7 @@ app.get('/delete/:id/delete',function(req,res){
                 res.redirect('/partAdmin')
         });
     });
+    
 //route to display all part reorders
 app.get('/restock',function(req,res){
     RestockPart.find(function(err,response){
@@ -527,8 +513,16 @@ app.get('/restock',function(req,res){
     });
 });
 
+//route to display all requested quotes
+app.get('/quoteRequests',function(req,res){
+    RequestQuote.find(
+        function(err,response){
+            res.render('pages/requestSearchResults', {banner: 'Requests',message:'',response});
+        });
+});
+
 //route to delete part requests/restock from the table
-app.get('/deleterestock/:id/delete',function(req,res){
+app.get('/restockDelete/:id/delete',function(req,res){
     RestockPart.deleteOne({_id: req.params.id},
         function(err){
             if(err) res.json(err);
@@ -538,11 +532,11 @@ app.get('/deleterestock/:id/delete',function(req,res){
         });
     });
     
-app.post('/restockPart', function(req,res){
+app.post('/partRestock', function(req,res){
     var restockAS = req.body.stockedAS
     var restockdescription1 = req.body.description1
     var restocksapNumber = req.body.sapNumber
-    res.render('pages/restockPart', {banner: 'Restock Order',message:'',restockAS,restockdescription1,restocksapNumber});
+    res.render('pages/partRestock', {banner: 'Restock Order',message:'',restockAS,restockdescription1,restocksapNumber});
 })
 
 app.post('/restockOrder', function(req,res){
@@ -561,7 +555,7 @@ app.post('/restockOrder', function(req,res){
         if(err)
             res.send("error");
         else
-            res.render('pages/partSearchhome', {banner: 'Restock Order', message: 'Part Ordered'});
+            res.render('pages/partHome', {banner: 'Restock Order', message: 'Part Ordered'});
     }) ;
 });
 
@@ -574,6 +568,13 @@ app.get('/createquote',function(req,res){
 app.get ('/printlabel', function(req,res){
     res.render('pages/printlabel', {banner: 'Print Label', message: ''})
 })
+
+//ROUTE TO PRINT LABELS FROM ADMIN PAGE
+app.post('/printlabel', function(req,res){
+    var printinfo = req.body;
+    res.render('pages/printlabel', {banner: '', message:'', printinfo})
+});
+
 
 ////////////////////////////////////// Password Code //////////////////////////////////////
 passport.use(
@@ -617,8 +618,8 @@ passport.deserializeUser(function(id, done) {
 
 
 // Login Parts Page
-app.get('/loginPart', forwardPartAuthenticated, (req, res) => 
-    res.render('pages/loginPart', {banner: 'Parts Admin Login', message: ''})
+app.get('/partLogin', forwardPartAuthenticated, (req, res) => 
+    res.render('pages/partLogin', {banner: 'Parts Admin Login', message: ''})
 )
 
 //Route to Admin page for parts to search by Stocked As part number
@@ -632,24 +633,24 @@ app.get ('/partAdminLV', ensurePartAuthenticated, (req, res) =>
 )
 
 // Login Parts
-app.post('/loginPart', (req, res, next) => {
+app.post('/partLogin', (req, res, next) => {
     passport.authenticate('local', {
         successRedirect: '/partAdmin',
-        failureRedirect: '/loginPart',
+        failureRedirect: '/partLogin',
         failureFlash: true
     })(req, res, next)
 })
   
 // Logout Parts
-app.get('/logoutPart', (req, res) => {
+app.get('/partLogout', (req, res) => {
     req.logout()
     req.flash('success_msg', 'You are logged out')
-    res.redirect('/loginPart')
+    res.redirect('/partLogin')
 })
 
 // Login Legacy Page
-app.get('/loginCard', forwardCardAuthenticated, (req, res) => 
-    res.render('pages/loginCard', {banner: 'Legacy Admin Login', message: ''})
+app.get('/cardLogin', forwardCardAuthenticated, (req, res) => 
+    res.render('pages/cardLogin', {banner: 'Legacy Admin Login', message: ''})
 )
 
 //Route to Admin page for Legacy to search by board number
@@ -663,19 +664,19 @@ app.get ('/cardAdminSN', ensureCardAuthenticated, (req,res) =>
 )
 
 // Login Legacy
-app.post('/loginCard', (req, res, next) => {
+app.post('/cardLogin', (req, res, next) => {
     passport.authenticate('local', {
         successRedirect: '/cardAdmin',
-        failureRedirect: '/loginCard',
+        failureRedirect: '/cardLogin',
         failureFlash: true
     })(req, res, next)
 })
   
 // Logout Legacy
-app.get('/logoutCard', (req, res) => {
+app.get('/cardLogout', (req, res) => {
     req.logout()
     req.flash('success_msg', 'You are logged out')
-    res.redirect('/loginCard')
+    res.redirect('/cardLogin')
 })
 
 //Register for Admin Pages
@@ -743,7 +744,7 @@ app.post('/register', (req, res) => {
                     'success_msg',
                     'You have registered awaiting approval'
                   )
-                  res.redirect('/loginPart')
+                  res.redirect('/partLogin')
                 })
                 .catch(err => console.log(err))
             })

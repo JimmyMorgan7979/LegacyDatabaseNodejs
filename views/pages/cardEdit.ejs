@@ -19,7 +19,7 @@
                             <ol class="list-unstyled">
                                 <% response.forEach(function(item){%>
                                     <li class="my-3 text-left">
-                                        <form action="/editCard/<%=item._id%>" method="POST">
+                                        <form action="/cardEdit/<%=item._id%>" method="POST">
                                             <div class="form-group p-2 text-center">
                                                 <label for="searchword">Edit Information</label>
                                                 <input class="form-control my-3" type="text" name="partNumber" placeholder="Part Number" value='<%=item.partNumber%>'/>

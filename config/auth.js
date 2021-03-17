@@ -10,7 +10,7 @@ module.exports = {
       return next()
     }
     req.flash('error_msg', 'Please log in to view that resource')
-    res.redirect('/loginPart')
+    res.redirect('/partLogin')
   },
   forwardPartAuthenticated: function(req, res, next) {
     if (!req.isAuthenticated()) {
@@ -23,7 +23,7 @@ module.exports = {
       return next()
     }
     req.flash('error_msg', 'Please log in to view that resource')
-    res.redirect('/loginCard')
+    res.redirect('/cardLogin')
   },
   forwardCardAuthenticated: function(req, res, next) {
     if (!req.isAuthenticated()) {
