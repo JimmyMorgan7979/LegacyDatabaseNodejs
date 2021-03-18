@@ -37,8 +37,8 @@ app.use(
     session({
         secret: 'its a secert for legacy and parts',
         resave: true,
-        saveUninitialized: true,
-        cookie: { maxAge: 900000 }
+        saveUninitialized: true
+        //cookie: { maxAge: 900000 }  //  60000 = 1 minute
     })
 )
 
@@ -56,6 +56,8 @@ app.use(function(req, res, next) {
     res.locals.error = req.flash('error')
     next()
 })
+
+////////////////////////////////////// MongoDB Schema Code //////////////////////////////////////
 
 //Database Model for our Cards
 var boardSchema = mongoose.Schema({
@@ -179,6 +181,8 @@ const UserSchema = new mongoose.Schema({
   
   const User = mongoose.model('User', UserSchema)
 
+////////////////////////////////////// Cards Route Code //////////////////////////////////////  
+
 // Route for "LEGACY SEARCH"
 app.get('/', function(req,res){
     res.render('pages/cardHome',{banner: "Legacy Search", message: ""});
@@ -206,6 +210,75 @@ app.post('/cardSearchResultSN', function(req,res){
          }).limit(20);
  });
 
+//Route for items to be added to legacy database
+app.get('/cardAdd', function(req,res){
+    res.render('pages/cardAdd', {banner: 'Add To Legacy',message:''});
+})
+
+app.post('/cardAdd', function(req,res){
+    var today = new Date();
+    var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
+    var cardInfo = req.body;
+    var newCard = new Card({
+        partNumber: cardInfo.partNumber,
+        serialNumber: cardInfo.serialNumber,
+        binNumber: cardInfo.binNumber,
+        binLocation: cardInfo.binLocation,
+        dateReceived: date
+    });
+    newCard.save(function(err,Card){
+        if(err)
+            res.send("error");
+        else
+            res.render('pages/cardAdmin', {banner: 'Legacy', message: 'Added Record to DB'});
+    }) ;
+});
+
+// Edit function for legacy database
+app.post('/cardEdit', function(req,res){
+    var search = req.body;
+    Card.find({_id: search._id}, 
+        function(err, response){
+            res.render('pages/cardEdit', {banner: 'Search Results to Update Legacy Record', search, response, message:''}) 
+    }).limit(1)
+ });
+
+// Edit function for legacy database
+app.post('/cardEdit/:id', function(req,res){
+    var updatecard = {_id: req.params.id}
+    var addedit = req.body
+    Card.findOneAndUpdate(updatecard, addedit,
+        function (err, docs) { 
+            if (docs == null){ 
+                res.render('pages/cardEdit', {banner: 'Search Results to Update Legacy Record', addedit, message:'Did not update record'}) 
+            } else { 
+                res.redirect('/cardAdmin') 
+            } 
+        }
+    )
+})
+
+ // Routes to edit cards
+ app.post('/cardUpdate', function(req,res){
+    var search = req.body;
+        Card.find({'partNumber': {'$regex': search.searchWord,$options:'i'}},
+        function(err,response){
+            res.render('pages/cardUpdate', {banner: 'Search Results to Update Legacy Record', search,response, message:''});
+        }).limit(20);
+ });
+
+ app.post('/cardUpdateSN', function(req,res){
+    var search = req.body;
+        Card.find({'serialNumber': {'$regex': search.searchWord,$options:'i'}},
+        function(err,response){
+            if (response == null){ 
+                res.render('pages/cardEdit', {banner: 'Search Results to Update Legacy Record', search, message:'No Record Found'}) 
+            } else { 
+                res.render('pages/cardEdit', {banner: 'Search Results to Update Legacy Record', search,response, message:''}) 
+            }
+        }).limit(1);
+ });
+ 
 //Route for items to be removed from the legacy database AND ALSO INSERTS INTO THE DELETED TABLE
 app.get('/del/:id/delete',function(req,res){
     test = Card.find({_id: req.params.id},
@@ -234,35 +307,7 @@ app.get('/del/:id/delete',function(req,res){
         });
 });
 
-//Route for items to be added to legacy database
-app.get('/cardAdd', function(req,res){
-    res.render('pages/cardAdd', {banner: 'Add To Legacy',message:''});
-})
-
-app.post('/cardAdd', function(req,res){
-    var today = new Date();
-    var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
-    var cardInfo = req.body;
-    var newCard = new Card({
-        partNumber: cardInfo.partNumber,
-        serialNumber: cardInfo.serialNumber,
-        binNumber: cardInfo.binNumber,
-        binLocation: cardInfo.binLocation,
-        dateReceived: date
-    });
-    newCard.save(function(err,Card){
-        if(err)
-            res.send("error");
-        else
-            res.render('pages/cardAdmin', {banner: 'Legacy', message: 'Added Record to DB'});
-    }) ;
-});
-
-// Edit function for legacy database
-app.get('/edit', function(req,res)
-{
-    res.render('pages/cardEdit', {banner: 'Edit Entry', message:''});
-});
+////////////////////////////////////// Parts Route Code ////////////////////////////////////// 
 
 //This begins the section for parts search
 app.get('/partHome', function(req,res){
@@ -338,22 +383,6 @@ app.post('/partUpdate', ensurePartAuthenticated, function(req,res){
         }).limit(1);
  });
 
- // Routes to edit cards
-app.post('/cardUpdate', function(req,res){
-    var search = req.body;
-        Card.find({'partNumber': {'$regex': search.searchWord,$options:'i'}},
-        function(err,response){
-            res.render('pages/cardEdit', {banner: 'Search Results to Update Legacy Record', search,response, message:''});
-        }).limit(1);
- });
-
- app.post('/cardUpdateSN', function(req,res){
-    var search = req.body;
-        Card.find({'serialNumber': {'$regex': search.searchWord,$options:'i:}'}},
-        function(err,response){
-            res.render('pages/cardEdit', {banner: 'Search Results to Update Legacy Record', search,response, message:''});
-        }).limit(1);
- });
 
 // Edit function for parts database
 app.post('/partEdit/:id', function(req,res){
@@ -366,21 +395,6 @@ app.post('/partEdit/:id', function(req,res){
             } 
             else{ 
                 res.redirect('/partAdmin') 
-            } 
-    })
-})
-
-// Edit function for legacy database
-app.post('/cardEdit/:id', function(req,res){
-    var updatepart = {_id: req.params.id}
-    var addedit = req.body
-    Card.findOneAndUpdate(updatepart, addedit,
-        function (err, docs) { 
-            if (err){ 
-                console.log(err) 
-            } 
-            else{ 
-                res.redirect('/cardAdmin') 
             } 
     })
 })
@@ -422,6 +436,8 @@ app.get('/delpart/:id/delete',function(req,res){
         });
 });
 
+////////////////////////////////////// Request, Restock, Quotes, and Print Route Code //////////////////////////////////////
+
 //Route to send Email to request quote for new parts
 app.get ('/requestNewPart', function(req,res){
     res.render('pages/requestNewPart', {banner: 'New Parts Quote Request', message:''})
@@ -460,7 +476,6 @@ app.post ('/partRequest', function(req,res){
     res.render('pages/partRequest', {banner: 'Parts Quote Request', message:'', requestStockedAS, requestedDescription, requestedSapNumber, requestedPrice})
     
 })
-
 app.post('/quoteRequest', function(req,res){
     var today = new Date();
     var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
@@ -587,7 +602,7 @@ passport.use(
             return done(null, false, { message: 'That email is not registered' })
         } 
         else if (user.token !== "Yes") {
-            return done(null, false, { message: 'You do not have approval' })
+            return done(null, false, { message: 'You do not have approval access this resource' })
         }
         
         // Match password
@@ -595,9 +610,7 @@ passport.use(
             if (err) throw err
             if (isMatch) {
             return done(null, user)
-            } 
-            
-            else {
+            } else {
             return done(null, false, { message: 'Password incorrect' })
             }
         })
@@ -649,9 +662,10 @@ app.get('/partLogout', (req, res) => {
 })
 
 // Login Legacy Page
-app.get('/cardLogin', forwardCardAuthenticated, (req, res) => 
+app.get('/cardLogin', forwardCardAuthenticated, (req, res) => {
+    req.logout()
     res.render('pages/cardLogin', {banner: 'Legacy Admin Login', message: ''})
-)
+})
 
 //Route to Admin page for Legacy to search by board number
 app.get ('/cardAdmin', ensureCardAuthenticated, (req,res) =>
@@ -680,10 +694,10 @@ app.get('/cardLogout', (req, res) => {
 })
 
 //Register for Admin Pages
-app.get('/register', forwardAuthenticated, (req, res) => res.render('pages/register', { banner: 'New User', message:''}))
+app.get('/userRegister', forwardAuthenticated, (req, res) => res.render('pages/userRegister', { banner: 'New User', message:''}))
 
 // Register
-app.post('/register', (req, res) => {
+app.post('/userRegister', (req, res) => {
     const { nameFirst, nameLast, email, password, password2 } = req.body
     let errors = []
   
@@ -700,7 +714,7 @@ app.post('/register', (req, res) => {
     }
   
     if (errors.length > 0) {
-      res.render('pages/register', {
+      res.render('pages/userRegister', {
         banner:'',
         message:'',
         errors,
@@ -714,7 +728,7 @@ app.post('/register', (req, res) => {
       User.findOne({ email: email }).then(user => {
         if (user) {
           errors.push({ msg: 'Email already exists' })
-          res.render('pages/register', {
+          res.render('pages/userRegister', {
             banner:'',
             message:'',
             errors,
@@ -742,7 +756,7 @@ app.post('/register', (req, res) => {
                 .then(user => {
                   req.flash(
                     'success_msg',
-                    'You have registered awaiting approval'
+                    'You have registered. Please wait for approval'
                   )
                   res.redirect('/partLogin')
                 })
@@ -753,6 +767,25 @@ app.post('/register', (req, res) => {
       })
     }
   })
+
+// Edit function for user database
+app.get('/userEdit', forwardAuthenticated, (req, res) => 
+    res.render('pages/userEdit', {banner: 'User Admin', message: ''})
+)
+
+app.post('/userEdit/:id', function(req,res){
+    var updateuser = {_id: req.params.id}
+    var addedit = req.body
+    User.findOneAndUpdate(updateuser, addedit,
+        function (err, docs) { 
+            if (docs == null){ 
+                res.render('pages/userEdit', {banner: '', addedit, message:'Did not update User'}) 
+            }
+            else{ 
+                res.redirect('/userEdit') 
+            } 
+    })
+})
 
 //Port that the app sends to
 app.listen(process.env.PORT || 5000);
