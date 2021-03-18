@@ -16,7 +16,7 @@ module.exports = {
     if (!req.isAuthenticated()) {
       return next()
     }
-    res.redirect('pages/partAdmin')     
+    res.redirect('/partAdmin')     
   },
   ensureCardAuthenticated: function(req, res, next) {
     if (req.isAuthenticated()) {
@@ -29,6 +29,6 @@ module.exports = {
     if (!req.isAuthenticated()) {
       return next()
     }
-    res.redirect('pages/cardAdmin')     
+    res.redirect('/cardAdmin')     
   }
 }
