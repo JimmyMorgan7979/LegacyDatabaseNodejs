@@ -12,9 +12,9 @@ const LocalStrategy = require('passport-local').Strategy
 app.use('/static', express.static(path.join(__dirname, 'public')))
 
 //Mongodb connection new 10-22-20
-var mongoose = require('mongoose');
-//var mongoDB ='mongodb://localhost:27017/Inventory';
-var mongoDB = 'mongodb+srv://admin:Pergatory_1979@cluster0.3duu7.mongodb.net/local_library?retryWrites=true&w=majority'
+var mongoose = require('mongoose')
+var mongoDB ='mongodb://localhost:27017/Inventory'
+//var mongoDB = 'mongodb+srv://admin:Pergatory_1979@cluster0.3duu7.mongodb.net/local_library?retryWrites=true&w=majority'
 mongoose.connect(mongoDB,{useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console,'MongoDB connection error:'));
@@ -281,6 +281,7 @@ app.post('/cardEdit/:id', function(req,res){
  
 //Route for items to be removed from the legacy database AND ALSO INSERTS INTO THE DELETED TABLE
 app.get('/del/:id/delete',function(req,res){
+    page = req.body.page
     test = Card.find({_id: req.params.id},
         function(err,response){
             var today = new Date();
@@ -303,7 +304,7 @@ app.get('/del/:id/delete',function(req,res){
         function(err){
             if(err) res.json(err);
             else
-                res.redirect('/cardAdmin')
+                res.redirect(page)
         });
 });
 
@@ -769,23 +770,23 @@ app.post('/userRegister', (req, res) => {
   })
 
 // Edit function for user database
-app.get('/userEdit', forwardAuthenticated, (req, res) => 
-    res.render('pages/userEdit', {banner: 'User Admin', message: ''})
-)
+// app.get('/userEdit', forwardAuthenticated, (req, res) => 
+//     res.render('pages/userEdit', {banner: 'User Admin', message: ''})
+// )
 
-app.post('/userEdit/:id', function(req,res){
-    var updateuser = {_id: req.params.id}
-    var addedit = req.body
-    User.findOneAndUpdate(updateuser, addedit,
-        function (err, docs) { 
-            if (docs == null){ 
-                res.render('pages/userEdit', {banner: '', addedit, message:'Did not update User'}) 
-            }
-            else{ 
-                res.redirect('/userEdit') 
-            } 
-    })
-})
+// app.post('/userEdit/:id', function(req,res){
+//     var updateuser = {_id: req.params.id}
+//     var addedit = req.body
+//     User.findOneAndUpdate(updateuser, addedit,
+//         function (err, docs) { 
+//             if (docs == null){ 
+//                 res.render('pages/userEdit', {banner: '', addedit, message:'Did not update User'}) 
+//             }
+//             else{ 
+//                 res.redirect('/userEdit') 
+//             } 
+//     })
+// })
 
 //Port that the app sends to
 app.listen(process.env.PORT || 5000);

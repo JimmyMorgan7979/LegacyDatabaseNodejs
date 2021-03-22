@@ -3,7 +3,7 @@ module.exports = {
     if (!req.isAuthenticated()) {
       return next()
     }
-    res.redirect('pages/home')     
+    res.redirect('/')     
   },
   ensurePartAuthenticated: function(req, res, next) {
     if (req.isAuthenticated()) {
