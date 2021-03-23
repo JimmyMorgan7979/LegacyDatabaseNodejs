@@ -12,8 +12,8 @@ const LocalStrategy = require('passport-local').Strategy
 app.use('/static', express.static(path.join(__dirname, 'public')))
 
 //Mongodb connection new 10-22-20
-var mongoose = require('mongoose');
-//var mongoDB ='mongodb://localhost:27017/Inventory';
+var mongoose = require('mongoose')
+//var mongoDB ='mongodb://localhost:27017/Inventory'
 var mongoDB = 'mongodb+srv://admin:Pergatory_1979@cluster0.3duu7.mongodb.net/local_library?retryWrites=true&w=majority'
 mongoose.connect(mongoDB,{useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
@@ -281,6 +281,7 @@ app.post('/cardEdit/:id', function(req,res){
  
 //Route for items to be removed from the legacy database AND ALSO INSERTS INTO THE DELETED TABLE
 app.get('/del/:id/delete',function(req,res){
+    page = req.body.page
     test = Card.find({_id: req.params.id},
         function(err,response){
             var today = new Date();
@@ -303,7 +304,7 @@ app.get('/del/:id/delete',function(req,res){
         function(err){
             if(err) res.json(err);
             else
-                res.redirect('/cardAdmin')
+                res.redirect(page)
         });
 });
 
@@ -594,26 +595,25 @@ app.post('/printlabel', function(req,res){
 ////////////////////////////////////// Password Code //////////////////////////////////////
 passport.use(
     new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
-        // Match user
-        User.findOne({
-        email: email
-        }).then(user => {
-        if (!user) {
-            return done(null, false, { message: 'That email is not registered' })
-        } 
-        else if (user.token !== "Yes") {
-            return done(null, false, { message: 'You do not have approval access this resource' })
-        }
-        
-        // Match password
-        bcrypt.compare(password, user.password, (err, isMatch) => {
-            if (err) throw err
-            if (isMatch) {
-            return done(null, user)
-            } else {
-            return done(null, false, { message: 'Password incorrect' })
+        // Match user / token
+        User.findOne({ email: email })
+        .then(user => {
+            if (!user) {
+                return done(null, false, { message: 'That email is not registered' })
+            } 
+            else if (user.token !== "Yes") {
+                return done(null, false, { message: 'You do not have approval to access this resource' })
             }
-        })
+        
+            // Match password
+            bcrypt.compare(password, user.password, (err, isMatch) => {
+                if (err) throw err
+                if (isMatch) {
+                    return done(null, user)
+                } else {
+                    return done(null, false, { message: 'Password incorrect' })
+                }
+            })
         })
     })
 )
@@ -702,33 +702,19 @@ app.post('/userRegister', (req, res) => {
     let errors = []
   
     if (!nameFirst || !nameLast || !email || !password || !password2) {
-      errors.push({ msg: 'Please enter all fields' })
+        errors.push({ msg: 'Please enter all fields' })
     }
   
     if (password != password2) {
-      errors.push({ msg: 'Passwords do not match' })
+        errors.push({ msg: 'Passwords do not match' })
     }
   
     if (password.length < 6) {
-      errors.push({ msg: 'Password must be at least 6 characters' })
+        errors.push({ msg: 'Password must be at least 6 characters' })
     }
   
     if (errors.length > 0) {
-      res.render('pages/userRegister', {
-        banner:'',
-        message:'',
-        errors,
-        nameFirst,
-        nameLast,
-        email,
-        password,
-        password2
-      })
-    } else {
-      User.findOne({ email: email }).then(user => {
-        if (user) {
-          errors.push({ msg: 'Email already exists' })
-          res.render('pages/userRegister', {
+        res.render('pages/userRegister', {
             banner:'',
             message:'',
             errors,
@@ -737,56 +723,110 @@ app.post('/userRegister', (req, res) => {
             email,
             password,
             password2
-          })
-        } else {
-          var token = "No"  
-          const newUser = new User({
-            nameFirst,
-            nameLast,
-            email,
-            password,
-            token
-          });
-  
-          bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(newUser.password, salt, (err, hash) => {
-              if (err) throw err
-              newUser.password = hash
-              newUser.save()
-                .then(user => {
-                  req.flash(
-                    'success_msg',
-                    'You have registered. Please wait for approval'
-                  )
-                  res.redirect('/partLogin')
+        })
+    } else {
+        User.findOne({ email: email }).then(user => {
+            if (user) {
+                errors.push({ msg: 'Email already exists' })
+                res.render('pages/userRegister', {
+                    banner:'',
+                    message:'',
+                    errors,
+                    nameFirst,
+                    nameLast,
+                    email,
+                    password,
+                    password2
                 })
-                .catch(err => console.log(err))
-            })
-          })
-        }
-      })
+            } else {
+                var token = "No"  
+                const newUser = new User({
+                    nameFirst,
+                    nameLast,
+                    email,
+                    password,
+                    token
+                })
+    
+                bcrypt.genSalt(10, (err, salt) => {
+                    bcrypt.hash(newUser.password, salt, (err, hash) => {
+                        if (err) throw err
+                        newUser.password = hash
+                        newUser.save()
+                        .then(user => {
+                            req.flash(
+                                'success_msg',
+                                'You have registered. Please wait for approval'
+                            )
+                            res.redirect('/partLogin')
+                        })
+                        .catch(err => console.log(err))
+                    })
+                })
+            }
+        })
     }
-  })
+})
 
-// Edit function for user database
+//Route to update password in user database
 app.get('/userEdit', forwardAuthenticated, (req, res) => 
     res.render('pages/userEdit', {banner: 'User Admin', message: ''})
 )
 
-app.post('/userEdit/:id', function(req,res){
-    var updateuser = {_id: req.params.id}
-    var addedit = req.body
-    User.findOneAndUpdate(updateuser, addedit,
-        function (err, docs) { 
-            if (docs == null){ 
-                res.render('pages/userEdit', {banner: '', addedit, message:'Did not update User'}) 
-            }
-            else{ 
-                res.redirect('/userEdit') 
-            } 
-    })
+//Route to save New Password
+app.post('/userUpdate', function(req,res){
+    const { email, password, password2, password3 } = req.body
+    let errors = []
+  
+    if (!email || !password || !password2 || !password3) {
+        errors.push({ msg: 'Please enter all fields' })
+    }
+
+    if (password == password2) {
+        errors.push({ msg: 'New password can not be the same as old' })
+    }
+  
+    if (password2 != password3) {
+        errors.push({ msg: 'Passwords do not match' })
+    }
+  
+    if (password2.length < 6) {
+        errors.push({ msg: 'Password must be at least 6 characters' })
+    }
+  
+    if (errors.length > 0) {
+        res.render('pages/userEdit', {
+            banner:'',
+            message:'',
+            errors,
+            email,
+            password,
+            password2,
+            password3
+        })
+    } else {
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(password2, salt, (err, hash) => {
+            if (err) throw err
+            passwordh = hash 
+                
+            User.findOneAndUpdate({ email: email }, { password: passwordh }, { new: true}, 
+                function (err, docs) {
+                    if (docs == null){ 
+                        res.render('pages/userEdit', {banner: '', addedit, message:'Did not update password'}) 
+                    }
+                }).then(user => {
+                    req.flash(
+                        'success_msg',
+                        'You have updated your password'
+                    )
+                    res.redirect('/userEdit')
+                })
+                .catch(err => console.log(err))
+            })
+        })
+    }
 })
 
 //Port that the app sends to
 app.listen(process.env.PORT || 5000);
-//console.log("Running on port 5000")

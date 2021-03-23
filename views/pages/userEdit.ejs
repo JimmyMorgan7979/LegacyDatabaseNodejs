@@ -15,31 +15,9 @@
                 </div>
                 <div class="col-sm-6">
                   <div class="card card-body text-center">
-                    <h1 class="text-center mb-3">Register</h1>
+                    <h1 class="text-center mb-3">Change Password</h1>
                     <%- include ("../partials/messages"); %>
-                    <form action="/register" method="POST">
-                      <div class="form-group">
-                        <label for="nameFirst">First Name</label>
-                        <input
-                          type="name"
-                          id="nameFirst"
-                          name="nameFirst"
-                          class="form-control"
-                          placeholder="Enter First Name"
-                          value="<%= typeof nameFirst != 'undefined' ? nameFirst : '' %>"
-                        />
-                      </div>
-                      <div class="form-group">
-                        <label for="nameLast">Last Name</label>
-                        <input
-                          type="name"
-                          id="nameLast"
-                          name="nameLast"
-                          class="form-control"
-                          placeholder="Enter Last Name"
-                          value="<%= typeof nameLast != 'undefined' ? nameLast : '' %>"
-                        />
-                      </div>
+                    <form action="/userUpdate" method="POST">
                       <div class="form-group">
                         <label for="email">Email</label>
                         <input
@@ -52,32 +30,43 @@
                         />
                       </div>
                       <div class="form-group">
-                        <label for="password">Password</label>
+                        <label for="password">Old Password</label>
                         <input
                           type="password"
                           id="password"
                           name="password"
                           class="form-control"
-                          placeholder="Create Password"
+                          placeholder="Old Password"
                           value="<%= typeof password != 'undefined' ? password : '' %>"
                         />
                       </div>
                       <div class="form-group">
-                        <label for="password2">Confirm Password</label>
+                        <label for="password2">New Password</label>
                         <input
                           type="password"
                           id="password2"
                           name="password2"
                           class="form-control"
-                          placeholder="Confirm Password"
+                          placeholder="New Password"
+                          value="<%= typeof password2 != 'undefined' ? password2 : '' %>"
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="password3">Comfirm New Password</label>
+                        <input
+                          type="password"
+                          id="password3"
+                          name="password3"
+                          class="form-control"
+                          placeholder="Comfirm New Password"
                           value="<%= typeof password2 != 'undefined' ? password2 : '' %>"
                         />
                       </div>
                       <button type="submit" class="btn btn-primary btn-block">
-                        Register
+                        Save Password
                       </button>
                     </form>
-                    <p class="lead mt-4">Have An Account? <br><a href="/loginPart">Login Parts</a><br><a href="/loginCard">Login Legacy</a></p>
+                    <a class="btn btn-secondary m-2" href="/">Back to home page</a>
                   </div>
                 </div>
                 <div class="col-sm">
