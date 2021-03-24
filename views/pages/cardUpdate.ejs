@@ -1,61 +1,47 @@
-<!DOCTYPE html>
-<html lang='en'>
-    <head>
-        <%- include('../partials/head'); %>
-    </head>
-    <body>
-        <div class="container">
-            <%- include('../partials/header'); %>
-            <%- include('../partials/links'); %>
-            <%- include('../partials/banner'); %> 
-            <%- include('../partials/message'); %>       
-            <div class="row mt-3">
-                <div class="col-sm">
-                    <!--Spacing--> 
-                </div>
-                <div class="col-sm-6">
-                    <div class="text-center mb-4 h5">Search results for "<%= search.searchWord %>"
-                        <ol class="list-unstyled">
-                            <% response.forEach(function(item){%>
-                                <li class="my-3 text-left">
-                                    <form action="/cardEdit" method="POST">
-                                        <strong class="pr-2">Part Number:</strong> <%= item.partNumber %> <br>
-                                        <% if (item.serialNumber) { %>
-                                            <strong class="pr-2">Serial Number: </strong> <%= item.serialNumber %><br>
-                                        <% } %>
-                                        <% if (item.binNumber) { %>
-                                            <strong class="pr-2">Bin Number: </strong> <%= item.binNumber %><br>
-                                        <% } %>
-                                        <% if (item.binLocation) { %>
-                                            <strong class="pr-2">Bin Location: </strong> <%= item.binLocation %><br>
-                                        <% } %>
-                                        <% if (item.remanPrice) { %>
-                                            <strong class="pr-2">Reman Price: </strong> <%= item.remanPrice %><br>
-                                        <% } %>
-                                        <% if (item.exahangePrice) { %>
-                                            <strong class="pr-2">Exchange Price: </strong> <%= item.exahangePrice %><br>
-                                        <% } %>
-                                        <% if (item.dateReceived) { %>
-                                            <strong class="pr-2">Date Received: </strong> <%= item.dateReceived %><br>
-                                        <% } %>
-                                        <input type="hidden" name="_id" value="<%=item._id%>"/>
-                                        <input type="hidden" name="partNumber" value="<%=item.partNumber%>"/>
-                                        <input type="hidden" name="serialNumber" value="<%=item.serialNumber%>"/>
-                                        <input type="hidden" name="binNumber" value="<%=item.binNumber%>"/>
-                                        <input type="hidden" name="binLocation" value="<%=item.binLocation%>"/>
-                                        <button class="btn btn-primary m-2" type="submit">Edit Record</button>
-                                        <a class="btn btn-danger m-2" id="deletebutton" href="/del/<%=item._id%>/delete">Delete Record</a>
-                                    </form>  
-                                </li>
-                            <% }); %>
-                        </ol>
-                        <a class="btn btn-secondary mt-4" href="/cardAdmin">Go Back to Admin Page</a>
-                    </div>
-                </div>
-                <div class="col-sm">
-                    <!--Spacing--> 
-                </div>
-            </div>
+<div class="row mt-3">
+    <div class="col-sm">
+        <!--Spacing--> 
+    </div>
+    <div class="col-sm-6">
+        <div class="text-center mb-4 h5">Search results for "<%= search.searchWord %>"
+            <ol class="list-unstyled">
+                <% response.forEach(function(item){%>
+                    <li class="my-3 text-left">
+                        <form action="/cardEdit" method="POST">
+                            <strong class="pr-2">Part Number:</strong> <%= item.partNumber %> <br>
+                            <% if (item.serialNumber) { %>
+                                <strong class="pr-2">Serial Number: </strong> <%= item.serialNumber %><br>
+                            <% } %>
+                            <% if (item.binNumber) { %>
+                                <strong class="pr-2">Bin Number: </strong> <%= item.binNumber %><br>
+                            <% } %>
+                            <% if (item.binLocation) { %>
+                                <strong class="pr-2">Bin Location: </strong> <%= item.binLocation %><br>
+                            <% } %>
+                            <% if (item.remanPrice) { %>
+                                <strong class="pr-2">Reman Price: </strong> <%= item.remanPrice %><br>
+                            <% } %>
+                            <% if (item.exahangePrice) { %>
+                                <strong class="pr-2">Exchange Price: </strong> <%= item.exahangePrice %><br>
+                            <% } %>
+                            <% if (item.dateReceived) { %>
+                                <strong class="pr-2">Date Received: </strong> <%= item.dateReceived %><br>
+                            <% } %>
+                            <input type="hidden" name="_id" value="<%=item._id%>"/>
+                            <input type="hidden" name="partNumber" value="<%=item.partNumber%>"/>
+                            <input type="hidden" name="serialNumber" value="<%=item.serialNumber%>"/>
+                            <input type="hidden" name="binNumber" value="<%=item.binNumber%>"/>
+                            <input type="hidden" name="binLocation" value="<%=item.binLocation%>"/>
+                            <button class="btn btn-primary m-2" type="submit">Edit Record</button>
+                            <a class="btn btn-danger m-2" id="deletebutton" href="/del/<%=item._id%>/delete">Delete Record</a>
+                        </form>  
+                    </li>
+                <% }); %>
+            </ol>
+            <a class="btn btn-secondary mt-4" href="/cardAdmin">Go Back to Admin Page</a>
         </div>
-    </body>
-</html>
+    </div>
+    <div class="col-sm">
+        <!--Spacing--> 
+    </div>
+</div>

@@ -5,6 +5,7 @@ const flash = require('connect-flash')
 const session = require('express-session')
 const path = require('path')
 const bcrypt = require('bcryptjs')
+const expressLayouts = require('express-ejs-layouts')
 const { forwardAuthenticated, ensurePartAuthenticated, forwardPartAuthenticated, ensureCardAuthenticated, forwardCardAuthenticated } = require('./config/auth')
 const LocalStrategy = require('passport-local').Strategy
 
@@ -29,8 +30,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 //SETS THE VIEW ENGINE 
+app.use(expressLayouts)
 app.set('view engine','ejs');
-//app.set('views', './views');
+app.set('layout', 'pages/layout');
 
 // Express session
 app.use(

@@ -1,86 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <%- include('../partials/head'); %>
-    </head>
-    <body>
-        <div class="container">
-            <%- include('../partials/header'); %>
-            <%- include('../partials/links'); %>
-            <%- include('../partials/banner'); %> 
-            <%- include('../partials/message'); %>  
-            <div class="row mt-3 text-center">
-                <div class="col-12 h3">
-                    Create Quote Form
-                </div>
-            </div> 
+<div class="row mt-3 text-center">
+    <div class="col-12 h3">
+        Create Quote Form
+    </div>
+</div> 
 
-            <div class="row mt-3">
-                <div class="col-sm-2">
-                    <!--spacing-->
+<div class="row mt-3">
+    <div class="col-sm-2">
+        <!--spacing-->
+    </div>
+    <div class="col-sm-8 border">
+        <form action="#" method="POST">
+            <div class="form-group ">
+                <div class="row g-3 justify-content-center my-2">
+                    <div class="col-3 text-right border">
+                      	<label for="quoteEmail" class="col-form-label ">Email to Quote:</label>
+                    </div>
+                    <div class="col-auto">
+                      	<input type="text" id="quoteEmail" class="form-control" name="quoteEmail">
+                    </div>            
                 </div>
-                <div class="col-sm-8 border">
-                    <form action="#" method="POST">
-                        <div class="form-group ">
-                            <div class="row g-3 justify-content-center my-2">
-                                <div class="col-3 text-right border">
-                                  <label for="quoteEmail" class="col-form-label ">Email to Quote:</label>
-                                </div>
-                                <div class="col-auto">
-                                  <input type="text" id="quoteEmail" class="form-control" name="quoteEmail">
-                                </div>            
-                            </div>
-                            <div class="row g-3 justify-content-center my-2">
-                                <div class="col-3 text-right border">
-                                  <label for="quotedBy" class="col-form-label">Quoted by:</label>
-                                </div>
-                                <div class="col-auto">
-                                  <input type="text" id="quotedBy" class="form-control" name="quotedBy">
-                                </div>            
-                            </div>
-                            <div class="row g-3 justify-content-center my-2">
-                                <div class="col-3 text-right border">
-                                  <label for="partNumber" class="col-form-label">Part Number:</label>
-                                </div>
-                                <div class="col-auto">
-                                  <input type="text" id="partNumber" class="form-control" name="partNumber">
-                                </div>            
-                            </div>
-                            <div class="row g-3 justify-content-center my-2">
-                                <div class="col-3 text-right border">
-                                  <label for="lvNumber" class="col-form-label">LV Number:</label>
-                                </div>
-                                <div class="col-auto">
-                                  <input type="text" id="lvNumber" class="form-control" name="lvNumber">
-                                </div>            
-                            </div>
-                            <div class="row g-3 justify-content-center my-2">
-                                <div class="col-3 text-right border">
-                                  <label for="quantity" class="col-form-label">Quantity:</label>
-                                </div>
-                                <div class="col-auto">
-                                  <input type="text" id="quantity" class="form-control" name="quantity">
-                                </div>            
-                            </div>
-                            <div class="row g-3 justify-content-center my-2">
-                                <div class="col-3 text-right border">
-                                  <label for="price" class="col-form-label">Price:</label>
-                                </div>
-                                <div class="col-auto">
-                                  <input type="text" id="price" class="form-control" name="price">
-                                </div>            
-                            </div>
-                        </div>
-
-                        <div class="text-center">
-                            <a class="btn btn-danger m-2" href="#">Submit Quote</a>
-                        </div>
-                    </form>  
+                <div class="row g-3 justify-content-center my-2">
+                    <div class="col-3 text-right border">
+                      	<label for="quotedBy" class="col-form-label">Quoted by:</label>
+                    </div>
+                    <div class="col-auto">
+                      	<input type="text" id="quotedBy" class="form-control" name="quotedBy">
+                    </div>            
                 </div>
-                <div class="col-sm-2">
-                    <!--spacing-->
+                <div class="row g-3 justify-content-center my-2">
+                    <div class="col-3 text-right border">
+                      	<label for="partNumber" class="col-form-label">Part Number:</label>
+                    </div>
+                    <div class="col-auto">
+                      	<input type="text" id="partNumber" class="form-control" name="partNumber">
+                    </div>            
+                </div>
+                <div class="row g-3 justify-content-center my-2">
+                    <div class="col-3 text-right border">
+                      	<label for="lvNumber" class="col-form-label">LV Number:</label>
+                    </div>
+                    <div class="col-auto">
+                      	<input type="text" id="lvNumber" class="form-control" name="lvNumber">
+                    </div>            
+                </div>
+                <div class="row g-3 justify-content-center my-2">
+                    <div class="col-3 text-right border">
+                      	<label for="quantity" class="col-form-label">Quantity:</label>
+                    </div>
+                    <div class="col-auto">
+                      	<input type="text" id="quantity" class="form-control" name="quantity">
+                    </div>            
+                </div>
+                <div class="row g-3 justify-content-center my-2">
+                    <div class="col-3 text-right border">
+                      	<label for="price" class="col-form-label">Price:</label>
+                    </div>
+                    <div class="col-auto">
+                      	<input type="text" id="price" class="form-control" name="price">
+                    </div>            
                 </div>
             </div>
-        </div>
-    </body>
-</html>
+
+            <div class="text-center">
+                <a class="btn btn-danger m-2" href="#">Submit Quote</a>
+            </div>
+        </form>  
+    </div>
+    <div class="col-sm-2">
+        <!--spacing-->
+    </div>
+</div>
