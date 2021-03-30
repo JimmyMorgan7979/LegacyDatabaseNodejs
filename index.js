@@ -5,6 +5,7 @@ const flash = require('connect-flash')
 const session = require('express-session')
 const path = require('path')
 const bcrypt = require('bcryptjs')
+const expressLayouts = require('express-ejs-layouts')
 const { forwardAuthenticated, ensurePartAuthenticated, forwardPartAuthenticated, ensureCardAuthenticated, forwardCardAuthenticated } = require('./config/auth')
 const LocalStrategy = require('passport-local').Strategy
 
@@ -13,8 +14,9 @@ app.use('/static', express.static(path.join(__dirname, 'public')))
 
 //Mongodb connection new 10-22-20
 var mongoose = require('mongoose')
+var mongoDB ='mongodb://10.83.93.60:27017/inventory'
 //var mongoDB ='mongodb://localhost:27017/Inventory'
-var mongoDB = 'mongodb+srv://admin:Pergatory_1979@cluster0.3duu7.mongodb.net/local_library?retryWrites=true&w=majority'
+//var mongoDB = 'mongodb+srv://admin:Pergatory_1979@cluster0.3duu7.mongodb.net/local_library?retryWrites=true&w=majority'
 mongoose.connect(mongoDB,{useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console,'MongoDB connection error:'));
@@ -29,8 +31,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 //SETS THE VIEW ENGINE 
+app.use(expressLayouts)
 app.set('view engine','ejs');
-//app.set('views', './views');
+app.set('layout', 'pages/layout');
 
 // Express session
 app.use(
@@ -57,129 +60,16 @@ app.use(function(req, res, next) {
     next()
 })
 
-////////////////////////////////////// MongoDB Schema Code //////////////////////////////////////
+////////////////////////////////////// MongoDB Schema Routes //////////////////////////////////////
 
-//Database Model for our Cards
-var boardSchema = mongoose.Schema({
-    partNumber: String,
-    serialNumber: String,
-    binNumber: String,
-    binLocation: String,
-    remanPrice: String,
-    exchangePrice: String,
-    dateReceived: String
-});
-var Card = mongoose.model("Card", boardSchema);
-
-//DATABASE MODEL FOR REMOVED CARDS
-var removedboardSchema = mongoose.Schema({
-    partNumber: String,
-    serialNumber: String,
-    binNumber: String,
-    binLocation: String,
-    remanPrice: String,
-    exchangePrice: String,
-    dateRemoved: String
-});
-var RemovedCard = mongoose.model("RemovedCard",removedboardSchema);
-
-//DATABASE MODEL FOR REMOVED PARTS
-var removedPartSchema = mongoose.Schema({
-    stockedAS: String,
-    description1: String,
-    sapNumber: String,
-    manufacturer: String,
-    description2: String,
-    location1: String,
-    location2: String,
-    location3: String,
-    drawer: String,
-    cross1: String,
-    cross2: String,
-    cross3: String,
-    price: String,
-    dateRemoved: String
-});
-var RemovedPart = mongoose.model("RemovedPart",removedPartSchema);
-
-
-//Database Model for Quote requests
-var requestQuoteSchema = mongoose.Schema({
-    partNumber: String,
-    serialNumber: String,
-    remanPrice: String,
-    exchangePrice: String,
-    stockedAS: String,
-    description1: String,
-    sapNumber: String,
-    price: String,
-    name: String,
-    company: String,
-    email: String,
-    phone: String,
-    message: String,
-    dateRequest: String,
-    quantity: String
-});
-var RequestQuote = mongoose.model("RequestQuote",requestQuoteSchema);
-
-//Database Model for our parts
-var partSchema = mongoose.Schema({
-    stockedAS: String,
-    description1: String,
-    sapNumber: String,
-    manufacturer: String,
-    description2: String,
-    location1: String,
-    location2: String,
-    location3: String,
-    drawer: String,
-    cross1: String,
-    cross2: String,
-    cross3: String,
-    price: String
-});
-var Part = mongoose.model("Part", partSchema);
-
-//Database Model for parts RESTOCK
-var restockPartSchema = mongoose.Schema({
-    stockedAS: String,
-    description1: String,
-    sapNumber: String,
-    quantity: String,
-    requestor: String,
-    daterequested: String
-});
-var RestockPart = mongoose.model("RestockPart", restockPartSchema);
-
-//Database Model for Admin Users
-const UserSchema = new mongoose.Schema({
-    nameFirst: {
-      type: String,
-      required: true
-    },
-    nameLast: {
-        type: String,
-        required: true
-      },
-    email: {
-      type: String,
-      required: true
-    },
-    password: {
-      type: String,
-      required: true
-    },
-    token: {
-        type: String
-    },
-    date: {
-      type: Date,
-      default: Date.now
-    }
-  })
-  
-  const User = mongoose.model('User', UserSchema)
+// Load DB Models
+const User = require('./models/User')
+const Card = require('./models/Card')
+const RemovedCard = require('./models/RemovedCard')
+const RemovedPart = require('./models/RemovedPart')
+const RequestQuote = require('./models/RequestQuote')
+const Part = require('./models/Part')
+const RestockPart = require('./models/RestockPart')
 
 ////////////////////////////////////// Cards Route Code //////////////////////////////////////  
 
@@ -581,16 +471,18 @@ app.get('/createquote',function(req,res){
 })
 
 //BEGINS THE SECTION FOR PRINTING LABELS
-app.get ('/printlabel', function(req,res){
-    res.render('pages/printlabel', {banner: 'Print Label', message: ''})
-})
+// app.get ('/printlabel', function(req,res){
+//     res.render('pages/printlabel', {banner: 'Print Label', message: ''})
+// })
 
 //ROUTE TO PRINT LABELS FROM ADMIN PAGE
-app.post('/printlabel', function(req,res){
-    var printinfo = req.body;
-    res.render('pages/printlabel', {banner: '', message:'', printinfo})
-});
-
+app.post('/printLabel', function(req,res){
+    var sapNumber = req.body.sapNumber
+    var stockedAS = req.body.stockedAS
+    var description1 = req.body.description1
+    var location1 = req.body.location1
+    var drawer = req.body.drawer
+})
 
 ////////////////////////////////////// Password Code //////////////////////////////////////
 passport.use(

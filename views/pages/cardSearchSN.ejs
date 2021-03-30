@@ -1,39 +1,25 @@
-<!DOCTYPE html>
-<html lang='en'>
-    <head>
-        <%- include('../partials/head'); %>
-    </head>
-    <body>
-        <div class="container">
-            <%- include('../partials/header'); %>
-            <%- include('../partials/links'); %>
-            <%- include('../partials/banner'); %> 
-            <%- include('../partials/message'); %>       
-            <div class="row mt-3">
-                <div class="col-sm">
-                    <!--Spacing--> 
-                </div>
-                <div class="col-sm-6">
-                    
-                    <form action='/cardSearchResult' method='POST' name = "form">
-                        <div class="form-group p-2">
-                            <label class="h5" for='searchword'>Enter a Board Number to Search our Legacy Stock</label> 
-                            <small>
-                                <br> 
-                                Don't konw your exact part or revision number? <br> 
-                                You can enter a partial number. EX: DS200LRPA or
-                            </small> 
-                            <a class="small ml-1" href="/">Search by Model Number</a>
-                            <input class="form-control my-3" type='text' name='searchWord' placeholder='Enter a search value'>
-                            <button class="btn btn-danger m-2" type='submit'>Submit</button> 
-                        </div>
-                       
-                    </form> 
-                </div>
-                <div class="col-sm">
-                    <!--Spacing--> 
-                </div>
+<div class="row mt-3">
+    <div class="col-sm">
+        <!--Spacing--> 
+    </div>
+    <div class="col-sm-6">
+        
+        <form action='/cardSearchResult' method='POST' name = "form">
+            <div class="form-group p-2">
+                <label class="h5" for='searchword'>Enter a Board Number to Search our Legacy Stock</label> 
+                <small>
+                    <br> 
+                    Don't konw your exact part or revision number? <br> 
+                    You can enter a partial number. EX: DS200LRPA or
+                </small> 
+                <a class="small ml-1" href="/">Search by Model Number</a>
+                <input class="form-control my-3" type='text' name='searchWord' placeholder='Enter a search value'>
+                <button class="btn btn-danger m-2" type='submit'>Submit</button> 
             </div>
-        </div>
-    </body>
-</html>
+            
+        </form> 
+    </div>
+    <div class="col-sm">
+        <!--Spacing--> 
+    </div>
+</div>

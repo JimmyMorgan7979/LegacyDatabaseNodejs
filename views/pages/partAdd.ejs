@@ -1,48 +1,35 @@
-<!DOCTYPE html>
-<html lang='en'>
-    <head>
-        <%- include('../partials/head'); %>
-        <link rel='stylesheet' href='static/css/placeholder.css'>
-    </head>
-    <body>
-        <div class="container">
-            <%- include('../partials/header'); %>
-            <%- include('../partials/links'); %>
-            <%- include('../partials/banner'); %> 
-            <%- include('../partials/message'); %>       
-            <div class="row mt-3">
-                <div class="col-sm">
-                    <!--Spacing--> 
-                </div>
-                <div class="col-sm-6">
-                    <form action="/partAdd" method="POST">
-                        <div class="form-group p-2 text-center">
-                          <label for="searchword">Enter Information</label>
-                          <input class="form-control my-3" type="text" name="stockedAS" placeholder="Part Number" />
-                          <input class="form-control my-3" type="text" name="description1" placeholder="Description of Part" />
-                          <input class="form-control my-3" type="text" name="description2" placeholder="Additional Description" />
-                          <input class="form-control my-3" type="text" name="sapNumber" placeholder="SAP Number" />
-                          <input class="form-control my-3" type="text" name="manufacturer" placeholder="Manufacturer" />
-                          <input class="form-control my-3" type="text" name="location1" placeholder="Location 1" />
-                          <input class="form-control my-3" type="text" name="location2" placeholder="Location 2" />
-                          <input class="form-control my-3" type="text" name="location3" placeholder="Location 3" />
-                          <input class="form-control my-3" type="text" name="drawer" placeholder="Drawer" />
-                          <input class="form-control my-3" type="text" name="cross1" placeholder="Cross 1" />
-                          <input class="form-control my-3" type="text" name="cross2" placeholder="Cross 2" />
-                          <input class="form-control my-3" type="text" name="cross3" placeholder="Cross 3" />
-                          <input class="form-control my-3" type="text" name="price" placeholder="List Price" />
-                          <button class="btn btn-danger m-2" type="submit">Add to Database</button>
-                        <div class="form-group p-2 text-center">
-                              
-                        </div>
-                            <a class="btn btn-secondary m-2" href="/partAdmin">Go Back to Admin Page</a>
-                        </div>
-                    </form>
-                </div>
-                <div class="col-sm">
-                    <!--Spacing--> 
-                </div>
+<link rel='stylesheet' href='static/css/placeholder.css'>
+
+<div class="row mt-3">
+    <div class="col-sm">
+        <!--Spacing--> 
+    </div>
+    <div class="col-sm-6">
+        <form action="/partAdd" method="POST">
+            <div class="form-group p-2 text-center">
+                <label for="searchword">Enter Information</label>
+                <input class="form-control my-3" type="text" name="stockedAS" placeholder="Part Number" />
+                <input class="form-control my-3" type="text" name="description1" placeholder="Description of Part" />
+                <input class="form-control my-3" type="text" name="description2" placeholder="Additional Description" />
+                <input class="form-control my-3" type="text" name="sapNumber" placeholder="SAP Number" />
+                <input class="form-control my-3" type="text" name="manufacturer" placeholder="Manufacturer" />
+                <input class="form-control my-3" type="text" name="location1" placeholder="Location 1" />
+                <input class="form-control my-3" type="text" name="location2" placeholder="Location 2" />
+                <input class="form-control my-3" type="text" name="location3" placeholder="Location 3" />
+                <input class="form-control my-3" type="text" name="drawer" placeholder="Drawer" />
+                <input class="form-control my-3" type="text" name="cross1" placeholder="Cross 1" />
+                <input class="form-control my-3" type="text" name="cross2" placeholder="Cross 2" />
+                <input class="form-control my-3" type="text" name="cross3" placeholder="Cross 3" />
+                <input class="form-control my-3" type="text" name="price" placeholder="List Price" />
+                <button class="btn btn-danger m-2" type="submit">Add to Database</button>
+            <div class="form-group p-2 text-center">
+                    
             </div>
-        </div>
-    </body>
-</html>
+                <a class="btn btn-secondary m-2" href="/partAdmin">Go Back to Admin Page</a>
+            </div>
+        </form>
+    </div>
+    <div class="col-sm">
+        <!--Spacing--> 
+    </div>
+</div>

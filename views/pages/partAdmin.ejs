@@ -1,43 +1,29 @@
-<!DOCTYPE html>
-<html lang='en'>
-    <head>
-        <%- include('../partials/head'); %>
-    </head>
-    <body>
-        <div class="container">
-            <%- include('../partials/header'); %>
-            <%- include('../partials/links'); %>
-            <%- include('../partials/banner'); %> 
-            <%- include('../partials/message'); %>       
-            <div class="row mt-3">
-                <div class="col-sm">
-                    <!--Spacing--> 
+<div class="row mt-3">
+    <div class="col-sm">
+        <!--Spacing--> 
+    </div>
+    <div class="col-sm-6">
+        <div class="text-center mb-4 h5">Admin for Parts DB
+            <form action="/partUpdate" method="POST">
+                <div class="form-group p-2 text-center">
+                    <label for="searchword"></label>
+                    <small><br> Please enter the exact part number. or</small>
+                    <a class="small ml-1" href="/partAdminLV">Search by "LV" Number</a>
+                    <input class="form-control my-3" type="text" name="searchWord" placeholder="Enter Stocked As part # " />
+                    <button class="btn btn-danger m-2" type="submit">Search for Part to Edit</button>
                 </div>
-                <div class="col-sm-6">
-                    <div class="text-center mb-4 h5">Admin for Parts DB
-                        <form action="/partUpdate" method="POST">
-                            <div class="form-group p-2 text-center">
-                                <label for="searchword"></label>
-                                <small><br> Please enter the exact part number. or</small>
-                                <a class="small ml-1" href="/partAdminLV">Search by "LV" Number</a>
-                                <input class="form-control my-3" type="text" name="searchWord" placeholder="Enter Stocked As part # " />
-                                <button class="btn btn-danger m-2" type="submit">Search for Part to Edit</button>
-                            </div>
-                            <div class="form-group p-2 text-center">
-                                <a class="btn btn-success m-2" href="/partAdd">Add Part to DB</br></a>
-                                <a class="btn btn-warning m-2" href="/restock">View Restock Requests</a>
-                                <a class="btn btn-warning m-2" href="/quoteRequests">View Quote Requests</a>
-                            </div>
-                            <div class="form-group p-2 text-center">
-                                <a href="/partLogout" class="btn btn-secondary">Logout</a>
-                            </div>
-                        </form>
-                    </div>
+                <div class="form-group p-2 text-center">
+                    <a class="btn btn-success m-2" href="/partAdd">Add Part to DB</br></a>
+                    <a class="btn btn-warning m-2" href="/restock">View Restock Requests</a>
+                    <a class="btn btn-warning m-2" href="/quoteRequests">View Quote Requests</a>
                 </div>
-                <div class="col-sm">
-                    <!--Spacing--> 
+                <div class="form-group p-2 text-center">
+                    <a href="/partLogout" class="btn btn-secondary">Logout</a>
                 </div>
-            </div>
+            </form>
         </div>
-    </body>
-</html>
+    </div>
+    <div class="col-sm">
+        <!--Spacing--> 
+    </div>
+</div>
