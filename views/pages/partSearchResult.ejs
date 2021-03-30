@@ -50,13 +50,21 @@
                             <input type='hidden', name='sapNumber', value='<%=item.sapNumber%>'>
                             <input type='hidden', name='price', value='<%=item.price%>'>
                             <button class= "btn btn-danger mt-2" type='submit'>Request Quote</button>
-                            </form>
+                        </form>
                             <form action='/partRestock' method="POST">
                             <input type='hidden', name='stockedAS', value='<%=item.stockedAS%>'>
                             <input type='hidden', name='description1', value='<%=item.description1%>'>
                             <input type='hidden', name='sapNumber', value='<%=item.sapNumber%>'>
                             <button class= "btn btn-secondary mt-2" type='submit'>Restock Order</button>
-                            </form>
+                        </form>
+                        <!-- <form action='/printLabel' method="POST">
+                            <input type='hidden', name='stockedAS', value='<%=item.stockedAS%>'>
+                            <input type='hidden', name='description1', value='<%=item.description1%>'>
+                            <input type='hidden', name='sapNumber', value='<%=item.sapNumber%>'>
+                            <input type='hidden', name='location1', value='<%=item.location1%>'>
+                            <input type='hidden', name='drawer', value='<%=item.drawer%>'>
+                            <button class= "btn btn-success mt-2" type='submit'>Print Label</button>
+                        </form> -->
                     </li>
                 <% }); %>
             </ol>

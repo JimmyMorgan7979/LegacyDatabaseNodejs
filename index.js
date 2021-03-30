@@ -14,8 +14,9 @@ app.use('/static', express.static(path.join(__dirname, 'public')))
 
 //Mongodb connection new 10-22-20
 var mongoose = require('mongoose')
+var mongoDB ='mongodb://10.83.93.60:27017/inventory'
 //var mongoDB ='mongodb://localhost:27017/Inventory'
-var mongoDB = 'mongodb+srv://admin:Pergatory_1979@cluster0.3duu7.mongodb.net/local_library?retryWrites=true&w=majority'
+//var mongoDB = 'mongodb+srv://admin:Pergatory_1979@cluster0.3duu7.mongodb.net/local_library?retryWrites=true&w=majority'
 mongoose.connect(mongoDB,{useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console,'MongoDB connection error:'));
@@ -470,16 +471,18 @@ app.get('/createquote',function(req,res){
 })
 
 //BEGINS THE SECTION FOR PRINTING LABELS
-app.get ('/printlabel', function(req,res){
-    res.render('pages/printlabel', {banner: 'Print Label', message: ''})
-})
+// app.get ('/printlabel', function(req,res){
+//     res.render('pages/printlabel', {banner: 'Print Label', message: ''})
+// })
 
 //ROUTE TO PRINT LABELS FROM ADMIN PAGE
-app.post('/printlabel', function(req,res){
-    var printinfo = req.body;
-    res.render('pages/printlabel', {banner: '', message:'', printinfo})
-});
-
+app.post('/printLabel', function(req,res){
+    var sapNumber = req.body.sapNumber
+    var stockedAS = req.body.stockedAS
+    var description1 = req.body.description1
+    var location1 = req.body.location1
+    var drawer = req.body.drawer
+})
 
 ////////////////////////////////////// Password Code //////////////////////////////////////
 passport.use(
