@@ -14,9 +14,9 @@ app.use('/static', express.static(path.join(__dirname, 'public')))
 
 //Mongodb connection new 10-22-20
 var mongoose = require('mongoose')
-var mongoDB ='mongodb://10.83.93.60:27017/inventory'
+//var mongoDB ='mongodb://10.83.93.60:27017/inventory'
 //var mongoDB ='mongodb://localhost:27017/Inventory'
-//var mongoDB = 'mongodb+srv://admin:Pergatory_1979@cluster0.3duu7.mongodb.net/local_library?retryWrites=true&w=majority'
+var mongoDB = 'mongodb+srv://admin:Pergatory_1979@cluster0.3duu7.mongodb.net/local_library?retryWrites=true&w=majority'
 mongoose.connect(mongoDB,{useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console,'MongoDB connection error:'));
