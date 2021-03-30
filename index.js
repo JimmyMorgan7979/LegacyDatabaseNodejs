@@ -169,9 +169,8 @@ app.post('/cardEdit/:id', function(req,res){
         }).limit(1);
  });
  
-//Route for items to be removed from the legacy database AND ALSO INSERTS INTO THE DELETED TABLE
+//Route for items to be removed from the legacy database (Admin page) and inserts into a deleted table
 app.get('/del/:id/delete',function(req,res){
-    page = req.body.page
     test = Card.find({_id: req.params.id},
         function(err,response){
             var today = new Date();
@@ -194,7 +193,35 @@ app.get('/del/:id/delete',function(req,res){
         function(err){
             if(err) res.json(err);
             else
-                res.redirect(page)
+                res.redirect('/cardAdmin')
+        });
+});
+
+//Route for cards to be removed from the legacy database (search page) and inserts into a deleted table
+app.get('/del/:id/remove',function(req,res){
+    test = Card.find({_id: req.params.id},
+        function(err,response){
+            var today = new Date();
+            var date = today.getMonth()+1+'-'+(today.getDate())+'-'+today.getFullYear();
+            var adddeleted = response[0];
+            var removedcard = new RemovedCard({
+                partNumber: adddeleted.partNumber,
+                serialNumber: adddeleted.serialNumber,
+                binNumber: adddeleted.binNumber,
+                binLocation: adddeleted.binLocation,
+                dateRemoved: date
+            });
+            removedcard.save(function(err,RemovedCard){
+                if(err)
+                    res.send("error");
+            });
+        });
+
+    Card.deleteOne({_id: req.params.id},
+        function(err){
+            if(err) res.json(err);
+            else
+                res.redirect('/')
         });
 });
 
