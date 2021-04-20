@@ -96,7 +96,7 @@ app.post('/cardSearchResultSN', function(req,res){
     var search = req.body;
      Card.find({serialNumber: {$regex: search.searchWord, $options: 'i'}},
          function(err,response){
-             res.render('pages/cardSearchResultSN', {banner: 'Search Results', search,response, message:''});
+             res.render('pages/cardSearchResult', {banner: 'Search Results', search,response, message:''});
          }).limit(20);
  });
 
