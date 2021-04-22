@@ -3,12 +3,12 @@
         <!--Spacing--> 
     </div>
     <div class="col-sm-6">
-        <form action="/partSearchResult" method="POST">
+        <form action="partHome/partSearchResult" method="POST">
             <div class="form-group p-2">
                 <label class="h5" for="searchword">Enter a Part Number to search our stock </label>
                 <small><br> Don't know your exact part or revision number? <br> You can enter a partial number. EX: 104x123 or
                 </small>
-                <a class="small ml-1" href="/partHomeLV">Search by "LV" Number</a>
+                <a class="small ml-1" href="partHome/partHomeLV">Search by "LV" Number</a>
                 <br>
                 <small><mark>You no Longer have to enter special characters such as 104x122aa__372 
                     <br>    
@@ -16,7 +16,7 @@
                 </small>
                 <input class="form-control my-3" type="text" name="searchWord" placeholder="Enter a search value" />
                 <button class="btn btn-danger m-2" type="submit">Submit</button>
-                <a type='button' class="btn btn-primary m-2" href="/partLogin">Login for Parts Admin</a>
+                <a type='button' class="btn btn-primary m-2" href="partLogin">Login for Parts Admin</a>
             </div>
         </form>
     </div>

@@ -6,7 +6,7 @@
 		<div class="card card-body text-center">
 			<h1 class="text-center mb-3">Change Password</h1>
 			<%- include ("../partials/messages"); %>
-			<form action="/userUpdate" method="POST">
+			<form action="userUpdate" method="POST">
 				<div class="form-group">
 					<label for="email">Email</label>
 					<input
@@ -51,9 +51,7 @@
 					value="<%= typeof password2 != 'undefined' ? password2 : '' %>"
 					/>
 				</div>
-				<button type="submit" class="btn btn-primary btn-block">
-					Save Password
-				</button>
+				<button type="submit" class="btn btn-primary btn-block">Save Password</button>
 			</form>
 			<a class="btn btn-secondary m-2" href="/">Back to home page</a>
 		</div>
@@ -62,6 +60,6 @@
         <!--Spacing--> 
     </div>
 </div>
-<script src="static/scripts/jquery-3.3.1.slim.min.js"></script>
-<script src="static/scripts/popper.min.js"></script>
-<script src="static/scripts/bootstrap.min.js"></script>
+<script src="/static/scripts/jquery-3.3.1.slim.min.js"></script>
+<script src="/static/scripts/popper.min.js"></script>
+<script src="/static/scripts/bootstrap.min.js"></script>
