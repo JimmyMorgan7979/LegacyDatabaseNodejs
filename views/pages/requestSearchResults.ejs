@@ -51,12 +51,12 @@
                             <% if (item.message) { %>
                                 <strong class="pr-2">Message: </strong> <%= item.message %><br>
                             <% } %>
-                            <a class="btn btn-danger btn-sm mt-2 text-white" id="deletebutton" href="/deleterequest/<%=item._id%>/delete">Remove From List</a> 
+                            <a class="btn btn-danger btn-sm mt-2 text-white" id="deletebutton" href="/partRequest/requestDelete/<%=item._id%>/delete">Remove From List</a> 
                             <hr>
                         </form>
                     </li>
                 <% }); %>
-                <a class="btn btn-secondary btn-block mt-4 text-white" href="/partadmin">Go Back to Admin Page</a>
+                <a class="btn btn-secondary btn-block mt-4 text-white" href="/partLogin/partAdmin">Go Back to Admin Page</a>
             </ol>
         </div>
     </div>

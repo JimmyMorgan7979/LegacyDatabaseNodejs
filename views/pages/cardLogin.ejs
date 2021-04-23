@@ -6,7 +6,7 @@
         <div class="card card-body text-center">
             <h1 class="text-center mb-3">Login</h1>
             <%- include('../partials/messages'); %>
-            <form action="/cardLogin" method="POST">
+            <form action="cardLogin/cardLogin" method="POST">
 				<div class="form-group">
 					<label for="email">Email</label>
 					<input type="email" id="email" name="email" class="form-control" placeholder="Enter Email"/>
@@ -18,10 +18,10 @@
 				<button type="submit" class="btn btn-primary btn-block">Login</button>
             </form>
             <div class="col-sm p-2">
-              No Account? <a href="/userRegister">Register</a>
+              No Account? <a href="cardLogin/userRegister">Register</a>
             </div>
             <div class="col-sm">
-              <a href="/userEdit">Change Password</a>
+              <a href="cardLogin/userEdit">Change Password</a>
             </div>
         </div>
     </div>

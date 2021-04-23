@@ -4,15 +4,15 @@
     </div>
     <div class="col-sm-6">
         <div class="text-center mb-4 h5">Admin for Parts DB
-            <form action="/partUpdateLV" method="POST">
+            <form action="/partHome/partUpdateLV" method="POST">
                 <div class="form-group p-2 text-center">
                     <label for="searchword"></label><small><br> Please enter a exact SAP part number. or</small>
-                    <a class="small ml-1" href="/partAdmin">Search by "Stocked As" Part Number</a>
+                    <a class="small ml-1" href="/partLogin/partAdmin">Search by "Stocked As" Part Number</a>
                     <input class="form-control my-3" type="text" name="searchWord" placeholder="Enter SAP part # (ex: LVxxxxxxxx)" />
                     <button class="btn btn-danger m-2" type="submit">Search for Part to Edit</button>
                 </div>
                 <div class="form-group p-2 text-center">
-                    <a class="btn btn-success m-2" href="/partAdd">Add Part to DB</a>
+                    <a class="btn btn-success m-2" href="/partHome/partAdd">Add Part to DB</a>
                 </div>
             </form>
         </div>
