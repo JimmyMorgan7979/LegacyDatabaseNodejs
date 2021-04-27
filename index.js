@@ -60,8 +60,6 @@ app.use(function(req, res, next) {
     next()
 })
 
-////////////////////////////////////// Routes Code //////////////////////////////////////  
-
 app.use('/', require('./routes/card.js'))
 app.use('/cardLogin', require('./routes/cardUser.js'))
 app.use('/partHome', require('./routes/part.js'))
